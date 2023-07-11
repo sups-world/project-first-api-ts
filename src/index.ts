@@ -1,5 +1,11 @@
 import 'dotenv/config';
 
-console.log('hello world 1');
+import express from 'express';
 
-console.log(process.env.SECRET_KEY);
+const app = express();
+
+const port = process.env.PORT;
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

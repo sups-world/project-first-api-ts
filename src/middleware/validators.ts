@@ -6,6 +6,7 @@ import { body, validationResult } from 'express-validator';
 export const userValidationRules = () => {
   return [
     body('name')
+      .isString()
       .notEmpty()
       .isLength({ min: 2 })
       .withMessage('name cannot be empty'),

@@ -5,5 +5,5 @@ export const signUp = (req: express.Request, res: express.Response) => {
 };
 
 export const loginUser = (req: express.Request, res: express.Response) => {
-  res.send('view single user');
+  res.send('logged in successfully');
 };

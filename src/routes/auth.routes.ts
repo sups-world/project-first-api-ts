@@ -2,18 +2,15 @@ import express from 'express';
 
 import { Router } from 'express';
 
-export const usersRoute = Router();
+export const authRoute = Router();
 
-usersRoute.post(
+authRoute.post(
   '/auth/signup',
   (req: express.Request, res: express.Response) => {
-    res.send('hello there');
+    res.send('sign up');
   },
 );
 
-usersRoute.post(
-  '/auth/login',
-  (req: express.Request, res: express.Response) => {
-    res.send('hello there');
-  },
-);
+authRoute.post('/auth/login', (req: express.Request, res: express.Response) => {
+  res.send('login');
+});

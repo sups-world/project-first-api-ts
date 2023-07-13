@@ -10,6 +10,7 @@ configDotenv();
 const app = express();
 const port = process.env.PORT;
 
+app.use(express.json());
 // routes
 app.use('/', routes);
 

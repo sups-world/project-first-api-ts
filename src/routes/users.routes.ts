@@ -1,24 +1,25 @@
 import express from 'express';
 
 import { Router } from 'express';
+import {
+  viewAllUsers,
+  viewSingleUser,
+  editUser,
+  deleteUser,
+} from '../controller/users.controller';
 
 export const usersRoute = Router();
 
-usersRoute.get('/users/all', (req: express.Request, res: express.Response) => {
-  res.send('get all users');
-});
+usersRoute.get('/all', viewAllUsers);
 
-usersRoute.get('/users/:id', (req: express.Request, res: express.Response) => {
-  res.send('get single user');
-});
+usersRoute.get('/:id', viewSingleUser);
 
-usersRoute.put('/users/:id', (req: express.Request, res: express.Response) => {
-  res.send('edit single user');
-});
+usersRoute.put('/:id', editUser);
 
-usersRoute.delete(
-  '/users/:id',
-  (req: express.Request, res: express.Response) => {
-    res.send('delete single user');
-  },
-);
+usersRoute.delete('/:id', deleteUser);
+
+// code to debug
+// (_, __, next) => {
+//   console.log('asda');
+//   next();
+// },

@@ -1,9 +1,8 @@
 import express from 'express';
 
 import { Router } from 'express';
+import { defaultHome } from '../controller/default.controller';
 
 export const defaultRoute = Router();
 
-defaultRoute.get('/', (req: express.Request, res: express.Response) => {
-  res.send('homepage');
-});
+defaultRoute.get('/', defaultHome);

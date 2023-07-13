@@ -2,15 +2,10 @@ import express from 'express';
 
 import { Router } from 'express';
 
+import { signUp, loginUser } from '../controller/auth.controller';
+
 export const authRoute = Router();
 
-authRoute.post(
-  '/auth/signup',
-  (req: express.Request, res: express.Response) => {
-    res.send('sign up');
-  },
-);
+authRoute.post('/signup', signUp);
 
-authRoute.post('/auth/login', (req: express.Request, res: express.Response) => {
-  res.send('login');
-});
+authRoute.post('/login', loginUser);

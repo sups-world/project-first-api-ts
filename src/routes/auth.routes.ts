@@ -8,4 +8,5 @@ export const authRoute = Router();
 // adding validator before signUp controller
 authRoute.post('/signup', userValidationRules, validate, signUp);
 
+// verify token in login
 authRoute.post('/login', userValidationRules, validate, loginUser);

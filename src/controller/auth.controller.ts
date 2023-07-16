@@ -1,7 +1,6 @@
 import express from 'express';
 import bcrypt, { hash } from 'bcrypt';
-
-import { user } from '../interface/user.interface';
+import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 
 export const signUp = (
   req: express.Request,
@@ -13,38 +12,45 @@ export const signUp = (
   //password hashing
 
   // inside req.body we get name,email,password
-  // console.log(
-  //   '.name',
-  //   req.body.name,
-  //   '::req.body.email',
-  //   req.body.email,
-  //   'req.body.password::',
-  //   req.body.password,
-  // );
 
-  const username = req.body.name;
-  const userEmail = req.body.email;
-  const userPw = req.body.password;
+  // destructuring must be with the same names as in the request
+  const { name, email, password } = req.body;
 
   bcrypt
-    .hash(userPw, 10)
+    .hash(password, 10)
     .then(hash => {
       // store hash in db
 
-      // registering user
-      // const newUser = req.body;
-      // newUser.password = hash;
-      // console.log(user);
-      // JWT TOKEN AND SESSIONS
+      // console.log(newUser);
+
+      const newUser = {
+        name: name,
+        email: email.toLowerCase(), //sanitization
+        password: hash,
+        token: '',
+      };
+
+      // creating a new token
+      const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
+        expiresIn: '7 days',
+      });
+
+      console.log(token, 'this is token');
+
+      // saving token
+      newUser.token = token;
+
+      // returning new USER
+      console.log(newUser, 'new user created successfully');
 
       console.log('pw hashed successfully', hash);
+
+      // response holds newUser json object which can be derived again
+      res.json(newUser);
     })
     .catch(err => {
       console.log(err);
     });
-
-  console.log(username, userEmail, userPw);
-  res.send('validation complete..sign up user');
 };
 
 export const loginUser = (req: express.Request, res: express.Response) => {

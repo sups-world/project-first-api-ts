@@ -9,4 +9,4 @@ export const authRoute = Router();
 authRoute.post('/signup', userValidationRules, validate, signUp);
 
 // verify token in login
-authRoute.post('/login', userValidationRules, validate, loginUser);
+authRoute.post('/login', loginUser);

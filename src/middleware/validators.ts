@@ -3,21 +3,22 @@ import { body, validationResult } from 'express-validator';
 
 // the array holds validation check for each body(req)
 
-export const userValidationRules = () => {
-  return [
-    body('name')
-      .isString()
-      .notEmpty()
-      .isLength({ min: 2 })
-      .withMessage('name cannot be empty'),
-    body('email').isEmail().trim().withMessage('this is not a valid email'),
-    body('password')
-      .isLength({ min: 5, max: 12 })
-      .withMessage(
-        'must be 5 characters or more..must not be more than 12 characters',
-      ),
-  ];
-};
+export const userValidationRules = [
+  //TODO:::change this function to array>>>>>
+
+  body('name')
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 2 })
+    .withMessage('name cannot be empty'),
+  body('email').trim().isEmail().withMessage('this is not a valid email'),
+  body('password')
+    .isLength({ min: 5, max: 12 })
+    .withMessage(
+      'must be 5 characters or more..must not be more than 12 characters',
+    ),
+];
 
 //this function extracts error from each element from body(req)
 export const validate = (
@@ -37,7 +38,7 @@ export const validate = (
     .array()
     .map((err: any) => extractedErrors.push({ [err.param]: err.msg }));
 
-  return res.status(422).json({
+  return res.status(400).json({
     ermsg: extractedErrors,
   });
 };

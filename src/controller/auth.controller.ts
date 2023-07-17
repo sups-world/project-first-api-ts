@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt, { hash, compareSync } from 'bcrypt';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 
+// function for signup
 export const signUp = (
   req: express.Request,
   res: express.Response,
@@ -53,6 +54,7 @@ export const signUp = (
     });
 };
 
+// function for login
 export const loginUser = (
   req: express.Request,
   res: express.Response,
@@ -73,6 +75,8 @@ export const loginUser = (
     },
   ];
 
+  // const flag for final checking
+  var flag: boolean;
   // destructuring email,passwords from the req.body into it's components email and password
   const { email, password } = req.body;
 
@@ -114,12 +118,21 @@ export const loginUser = (
       console.log(match);
       if (match) {
         console.log('username and password matched');
+        flag = true;
       } else {
         console.log('incorrect password');
+        flag = false;
       }
     };
-    asyncFxn();
 
-    res.send('validation complete..log in user');
+    asyncFxn().then(() => {
+      if (flag) {
+        res.send('correct credentials..welcome user');
+      } else {
+        res.send('Email and password did not match...log in unsuccessful');
+      }
+    });
+
+    // res.send('validation complete..log in user');
   }
 };

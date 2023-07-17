@@ -4,6 +4,7 @@ import 'dotenv/config';
 import express from 'express';
 
 import { routes } from './routes/index.routes';
+// import { errorHandler } from './middleware/errorHandler';
 
 configDotenv();
 
@@ -14,6 +15,12 @@ app.use(express.json());
 // routes
 app.use('/', routes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// error handler at the end of use and routes
+// app.use(errorHandler);
+app.listen(port, async () => {
+  try {
+    console.log(`Server is running on port ${port}`);
+  } catch (error) {
+    console.log(`unable to liseten on port ${port}`);
+  }
 });

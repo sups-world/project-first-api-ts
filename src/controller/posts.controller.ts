@@ -75,8 +75,26 @@ export const viewSinglePost = (
   }
 };
 
-export const createPost = (req: express.Request, res: express.Response) => {
-  res.send('create a post');
+// TODO:::createdBy should be the logged in user
+export const createPost = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id, title, post, createdBy } = req.body;
+  let newPost: postInfo = {
+    id: id as number,
+    title: title as string,
+    post: post as string,
+    createdBy: createdBy as string,
+  };
+
+  // console.log(newPost);
+  // res.send(newPost);
+
+  dummyPostsdb.push(newPost);
+  console.log(dummyPostsdb);
+  res.send(dummyPostsdb);
 };
 
 export const editPost = (req: express.Request, res: express.Response) => {

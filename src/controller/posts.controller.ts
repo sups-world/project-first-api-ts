@@ -5,6 +5,7 @@ interface postInfo {
   id: number;
   title?: string;
   post?: string;
+  createdBy?: string;
 }
 
 // dummy posts db
@@ -13,11 +14,19 @@ const dummyPostsdb: postInfo[] = [
     id: 1,
     title: 'title1',
     post: 'post1',
+    createdBy: 'admin',
   },
   {
     id: 2,
     title: 'title2',
     post: 'post2',
+    createdBy: 'ram',
+  },
+  {
+    id: 3,
+    title: 'title3',
+    post: 'post3',
+    createdBy: 'shyam',
   },
 ];
 
@@ -28,8 +37,8 @@ export const viewAllPosts = async (
 ) => {
   try {
     const allPosts: postInfo[] = dummyPostsdb.map(a => a);
-    console.log(allPosts);
-    res.end();
+    // console.log(allPosts);
+    res.send(allPosts);
   } catch (error) {
     res.send(error);
   }
@@ -40,22 +49,26 @@ export const viewSinglePost = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  // get id from params
-  // compare id to dummy database
-  // show related post
+  let findById: postInfo;
+
   try {
     const { id } = req.params;
 
-    var onePost: postInfo[] = dummyPostsdb.map(a => {
-      if (id === a.id.toString()) {
-        console.log(a);
-        return a;
-      }
-      console.log(onePost);
-      // res.send('okay');
-    }) as postInfo[];
+    // var onePost: postInfo[] = dummyPostsdb.map(a => {
+    //   if (id === a.id.toString()) {
+    //     findById = a;
+    //     return findById;
+    //   }
+    //   // console.log(onePost);
+    // }) as postInfo[];
+    // res.send(findById);
 
-    res.send(onePost[0]);
+    console.log(dummyPostsdb.find(a => a.id.toString() === id));
+
+    const postById: postInfo = dummyPostsdb.find(
+      a => a.id.toString() === id,
+    ) as postInfo;
+    res.send(postById);
   } catch (error) {
     console.log(error);
     res.send(ReferenceError);

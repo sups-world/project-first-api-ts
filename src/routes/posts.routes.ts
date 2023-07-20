@@ -18,6 +18,6 @@ postsRoute.get('/:id', viewSinglePost);
 postsRoute.post('/new/:id', createPost);
 
 // put or patch
-postsRoute.patch('/:id', editPost);
+postsRoute.patch('/edit/:id', editPost);
 
 postsRoute.delete('/:id', deletePost);

@@ -49,8 +49,6 @@ export const viewSinglePost = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  let findById: postInfo;
-
   try {
     const { id } = req.params;
 
@@ -63,7 +61,7 @@ export const viewSinglePost = (
     // }) as postInfo[];
     // res.send(findById);
 
-    console.log(dummyPostsdb.find(a => a.id.toString() === id));
+    // console.log(dummyPostsdb.find(a => a.id.toString() === id));
 
     const postById: postInfo = dummyPostsdb.find(
       a => a.id.toString() === id,
@@ -89,16 +87,43 @@ export const createPost = async (
     createdBy: createdBy as string,
   };
 
-  // console.log(newPost);
-  // res.send(newPost);
-
-  dummyPostsdb.push(newPost);
-  console.log(dummyPostsdb);
-  res.send(dummyPostsdb);
+  try {
+    dummyPostsdb.push(newPost);
+    res.send(dummyPostsdb);
+  } catch (error) {
+    console.log(error);
+    res.send('some problems occured');
+  }
 };
 
 export const editPost = (req: express.Request, res: express.Response) => {
-  res.send('edit a post');
+  try {
+    // check db for the req.body.id
+    // if post exists, then replace the existing data with new data
+
+    const { id, title, post, createdBy } = req.body;
+    let editedPost: postInfo = {
+      id: id as number,
+      title: title as string,
+      post: post as string,
+      createdBy: createdBy as string,
+    };
+
+    const postById: postInfo = dummyPostsdb.find(
+      a => a.id.toString() === id,
+    ) as postInfo;
+    if (postById) {
+      postById.id = id;
+      postById.title = title;
+      postById.post = post;
+      postById.createdBy = createdBy;
+    } else {
+      res.send('no such id found');
+    }
+  } catch (error) {
+    console.log(error);
+    res.send('some problems occured');
+  }
 };
 
 export const deletePost = (req: express.Request, res: express.Response) => {

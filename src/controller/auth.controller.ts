@@ -9,7 +9,7 @@ interface accountInfo {
   hashedPw: string;
 }
 
-// second dummy db
+//  dummy db
 // to define an array of objects
 const dummyDb2: accountInfo[] = [
   {

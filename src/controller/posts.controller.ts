@@ -3,8 +3,8 @@ import express from 'express';
 // interface for posts
 interface postInfo {
   id: number;
-  title: string;
-  post: string;
+  title?: string;
+  post?: string;
 }
 
 // dummy posts db
@@ -35,8 +35,31 @@ export const viewAllPosts = async (
   }
 };
 
-export const viewSinglePost = (req: express.Request, res: express.Response) => {
-  res.send('view single post');
+export const viewSinglePost = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  // get id from params
+  // compare id to dummy database
+  // show related post
+  try {
+    const { id } = req.params;
+
+    var onePost: postInfo[] = dummyPostsdb.map(a => {
+      if (id === a.id.toString()) {
+        console.log(a);
+        return a;
+      }
+      console.log(onePost);
+      // res.send('okay');
+    }) as postInfo[];
+
+    res.send(onePost[0]);
+  } catch (error) {
+    console.log(error);
+    res.send(ReferenceError);
+  }
 };
 
 export const createPost = (req: express.Request, res: express.Response) => {

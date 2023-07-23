@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 
 // interface for posts
 interface postInfo {
@@ -30,6 +30,7 @@ const dummyPostsdb: postInfo[] = [
   },
 ];
 
+// view all posts
 export const viewAllPosts = async (
   req: express.Request,
   res: express.Response,
@@ -96,7 +97,12 @@ export const createPost = async (
   }
 };
 
-export const editPost = (req: express.Request, res: express.Response) => {
+// edit post
+export const editPost = async (
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction,
+) => {
   try {
     // check db for the req.body.id
     // if post exists, then replace the existing data with new data
@@ -120,12 +126,54 @@ export const editPost = (req: express.Request, res: express.Response) => {
     } else {
       res.send('no such id found');
     }
+
+    // replace the data in the index with id-1
+    dummyPostsdb[id - 1] = editedPost;
+    console.log(dummyPostsdb);
+    res.send(dummyPostsdb);
   } catch (error) {
     console.log(error);
     res.send('some problems occured');
   }
 };
 
-export const deletePost = (req: express.Request, res: express.Response) => {
-  res.send('delete a post');
+//delete post by id
+export const deletePost = async (
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction,
+) => {
+  //  destruct id from req.body
+  // if id = dummyPostsdb.find( () => {if id ==a.id then dummyPostsdb.splice(dummydb.indexOf(a),1)})
+  // params to access url data
+  const { id } = req.params;
+  try {
+    // dummyPostsdb.find(data => {
+    //   if (data.id.toString() === id) {
+    //     dummyPostsdb.splice(dummyPostsdb.indexOf(data), 1);
+    //     console.log('post deleted successfully');
+    //     res.send(dummyPostsdb);
+    //   } else {
+    //     console.log('post id did not match');
+    //   }
+    // });
+
+    const postById: postInfo = dummyPostsdb.find(
+      a => a.id.toString() === id,
+    ) as postInfo;
+
+    // console.log(postById, 'to be deleted');
+
+    if (postById) {
+      dummyPostsdb.splice(dummyPostsdb.indexOf(postById), 1);
+      console.log('post deleted successfully');
+      res.send(`post deleted successfully`);
+    } else {
+      console.log('id does not exist');
+      res.end();
+    }
+  } catch (error) {
+    console.log(error);
+    res.send('error occured in delete');
+  }
 };

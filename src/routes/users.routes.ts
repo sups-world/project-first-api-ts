@@ -15,9 +15,9 @@ usersRoute.get('/all', viewAllUsers);
 // using query here
 usersRoute.get('/?', viewSingleUser);
 
-usersRoute.put('/:id', editUser);
+usersRoute.patch('/edit?', editUser);
 
-usersRoute.delete('/:id', deleteUser);
+usersRoute.delete('/delete/:id', deleteUser);
 
 // code to debug
 // (_, __, next) => {

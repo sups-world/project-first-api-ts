@@ -12,7 +12,8 @@ export const usersRoute = Router();
 
 usersRoute.get('/all', viewAllUsers);
 
-usersRoute.get('/:id', viewSingleUser);
+// using query here
+usersRoute.get('/?', viewSingleUser);
 
 usersRoute.put('/:id', editUser);
 

@@ -45,6 +45,7 @@ export const viewAllPosts = async (
   }
 };
 
+// view single post
 export const viewSinglePost = (
   req: express.Request,
   res: express.Response,
@@ -52,17 +53,6 @@ export const viewSinglePost = (
 ) => {
   try {
     const { id } = req.params;
-
-    // var onePost: postInfo[] = dummyPostsdb.map(a => {
-    //   if (id === a.id.toString()) {
-    //     findById = a;
-    //     return findById;
-    //   }
-    //   // console.log(onePost);
-    // }) as postInfo[];
-    // res.send(findById);
-
-    // console.log(dummyPostsdb.find(a => a.id.toString() === id));
 
     const postById: postInfo = dummyPostsdb.find(
       a => a.id.toString() === id,

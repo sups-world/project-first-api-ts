@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 
 // interface
 interface userInfo {
@@ -33,9 +33,31 @@ export const viewAllUsers = async (
   }
 };
 
-export const viewSingleUser = (req: express.Request, res: express.Response) => {
+// view single user by name
+export const viewSingleUser = async (
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction,
+) => {
   // access db, findOne
-  res.send('view single user');
+  try {
+    const { name } = req.query;
+
+    const userByName: userInfo = dummyDb3.find(
+      a => a.name.toLocaleLowerCase() === name,
+    ) as userInfo;
+
+    if (userByName) {
+      console.log('user exists');
+      res.send(userByName);
+    } else {
+      console.log('no such user exists');
+      res.send('No such user exists');
+    }
+  } catch (error) {
+    console.log(error);
+    res.send('error viewing single user');
+  }
 };
 
 export const editUser = (req: express.Request, res: express.Response) => {

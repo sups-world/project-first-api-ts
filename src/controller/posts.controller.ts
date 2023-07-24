@@ -38,11 +38,12 @@ export const viewAllPosts = async (
 ) => {
   // const allPosts: postInfo[] = dummyPostsdb.map(a => a);
   // :postinfo[] means allPosts definitely returns postInfo[] i.e cannot be null or undefined..so TS is telling us to handle that
-  const allPosts = dummyPostsdb.map(a => a);
-  if (!allPosts) {
+
+  // const allPosts = dummyPostsdb.map(a => a); this becomes memory intensive
+  if (!dummyPostsdb) {
     return res.status(404).send('no posts found');
   }
-  res.status(200).send(allPosts);
+  res.status(200).send(dummyPostsdb);
 };
 
 // view single post
@@ -90,11 +91,11 @@ export const editPost = async (
   const { id } = req.params;
   const { title, post } = req.body;
 
-  let editedPost: postInfo | unknown = {
-    id: id as unknown as string,
-    title: title as string,
-    post: post as string,
-  };
+  // let editedPost: postInfo | unknown = {
+  //   id: id as unknown as string,
+  //   title: title as string,
+  //   post: post as string,
+  // };
 
   const postId = dummyPostsdb.findIndex(a => a.id.toString() === id);
 
@@ -105,8 +106,8 @@ export const editPost = async (
   if (postId === -1) {
     return res.status(404).send('no such id exists');
   }
-  console.log(':::::::::');
-  console.log(postId);
+  // console.log(':::::::::');
+  // console.log(postId);
   dummyPostsdb[postId].title = title;
   dummyPostsdb[postId].post = post;
 

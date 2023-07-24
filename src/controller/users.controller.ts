@@ -34,7 +34,7 @@ export const viewAllUsers = async (
   next: express.NextFunction,
 ) => {
   // access db, get list of all users
-  res.send(dummyDb3);
+  res.status(200).send(dummyDb3);
 };
 
 // view single user by id
@@ -43,28 +43,15 @@ export const viewSingleUser = async (
   res: express.Response,
   next: NextFunction,
 ) => {
-  // access db, findOne
-  // const { name } = req.query;
   const { id } = req.params;
 
-  // const userByName: userInfo = dummyDb3.find(
-  //   a => a.name.toLocaleLowerCase() === name,
-  // ) as userInfo;
+  const userIndex = dummyDb3.findIndex(a => a.id.toString() === id);
 
-  const userById = dummyDb3.findIndex(a => a.id.toString() === id);
-
-  // if (userById) {
-  //   console.log('user exists');
-  //   res.send(userByName);
-  // } else {
-  //   console.log('no such user exists');
-  //   res.send('No such user exists');
-  // }
-  console.log(userById);
-  if (userById !== -1) {
-    res.status(200).send(dummyDb3[userById]);
+  console.log(userIndex);
+  if (userIndex !== -1) {
+    res.status(200).send(dummyDb3[userIndex]);
   } else {
-    res.status(404).send('user not found');
+    res.status(404).send('user id does not exist');
   }
 };
 
@@ -87,23 +74,6 @@ export const editUser = async (
   } else {
     return res.status(404).send('no such record found');
   }
-
-  // const userById: userInfo = dummyDb3.find(
-  //   a => a.id.toString() === id,
-  // ) as userInfo;
-
-  // if (userById) {
-  //   console.log('ready to edit name');
-  //   const { newName } = req.body;
-  //   const index: number = dummyDb3.indexOf(userById);
-  //   // console.log(newName + ':::newName:::' + index + 'this is the index');
-  //   // dummyDb3.splice(1,index,newName)
-  //   console.log(userById);
-  // } else {
-  //   return res.status(404).send('id not found');
-  // }
-
-  res.status(200).send('edit a user');
 };
 
 // deleting a user
@@ -124,7 +94,7 @@ export const deleteUser = async (
     dummyDb3.splice(dummyDb3.indexOf(userById), 1);
     console.log('post deleted successfully');
 
-    res.status(200).send('deleted successfully');
+    res.status(200).send(userById);
   } else {
     res.status(404).send('user not found');
   }

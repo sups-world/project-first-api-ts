@@ -106,7 +106,7 @@ export const loginUser = async (
       }
     } catch (error) {
       console.log(error);
-      res.end();
+      return res.status(500).send('server error');
     }
 
     // assign a jwt token

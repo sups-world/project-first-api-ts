@@ -12,7 +12,6 @@ export const usersRoute = Router();
 
 usersRoute.get('/', viewAllUsers);
 
-// using query here
 usersRoute.get('/:id', viewSingleUser);
 
 usersRoute.patch('/:id', editUser);

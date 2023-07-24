@@ -37,7 +37,7 @@ export const viewAllPosts = async (
   next: express.NextFunction,
 ) => {
   // const allPosts: postInfo[] = dummyPostsdb.map(a => a);
-  // :postifo[] means allPosts definitely returns postInfo[] i.e cannot be null or undefined..so TS is telling us to handle that
+  // :postinfo[] means allPosts definitely returns postInfo[] i.e cannot be null or undefined..so TS is telling us to handle that
   const allPosts = dummyPostsdb.map(a => a);
   if (!allPosts) {
     return res.status(404).send('no posts found');

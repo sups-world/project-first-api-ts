@@ -27,35 +27,44 @@ const dummyDb3: userInfo[] = [
   },
 ];
 
+// view all users
 export const viewAllUsers = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   // access db, get list of all users
-  const allUsers: userInfo[] = dummyDb3.map(a => a);
-  res.send(allUsers);
+  res.send(dummyDb3);
 };
 
-// view single user by name
+// view single user by id
 export const viewSingleUser = async (
   req: express.Request,
   res: express.Response,
   next: NextFunction,
 ) => {
   // access db, findOne
-  const { name } = req.query;
+  // const { name } = req.query;
+  const { id } = req.params;
 
-  const userByName: userInfo = dummyDb3.find(
-    a => a.name.toLocaleLowerCase() === name,
-  ) as userInfo;
+  // const userByName: userInfo = dummyDb3.find(
+  //   a => a.name.toLocaleLowerCase() === name,
+  // ) as userInfo;
 
-  if (userByName) {
-    console.log('user exists');
-    res.send(userByName);
+  const userById = dummyDb3.findIndex(a => a.id.toString() === id);
+
+  // if (userById) {
+  //   console.log('user exists');
+  //   res.send(userByName);
+  // } else {
+  //   console.log('no such user exists');
+  //   res.send('No such user exists');
+  // }
+  console.log(userById);
+  if (userById !== -1) {
+    res.status(200).send(dummyDb3[userById]);
   } else {
-    console.log('no such user exists');
-    res.send('No such user exists');
+    res.status(404).send('user not found');
   }
 };
 

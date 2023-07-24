@@ -133,13 +133,13 @@ export const deletePost = async (
   // above code gives error..postbyId cannot be undefined acc to above code..but if id doesn't match it becomes undefined
   // ts is telling us to handle that condition
 
-  const postById = dummyPostsdb.find(a => a.id.toString() === id);
+  // const postById = dummyPostsdb.find(a => a.id.toString() === id);
+  const postIndex = dummyPostsdb.findIndex(a => a.id.toString() === id);
 
-  // console.log(postById, 'to be deleted');
-
-  if (postById) {
-    dummyPostsdb.splice(dummyPostsdb.indexOf(postById), 1);
-    res.status(200).send(`post deleted successfully`);
+  if (postIndex !== -1) {
+    const delItem = dummyPostsdb[postIndex];
+    dummyPostsdb.splice(postIndex, 1);
+    res.status(200).send(delItem);
   } else {
     res.status(404).send('id not found');
   }

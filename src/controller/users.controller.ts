@@ -75,23 +75,33 @@ export const editUser = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id, name } = req.query;
-  console.log(id, name);
+  const { id } = req.params;
+  const { name } = req.body;
 
-  const userById: userInfo = dummyDb3.find(
-    a => a.id.toString() === id,
-  ) as userInfo;
+  const userIndex = dummyDb3.findIndex(a => a.id.toString() === id);
+  console.log(userIndex);
 
-  if (userById) {
-    console.log('ready to edit name');
-    const { newName } = req.body;
-    const index: number = dummyDb3.indexOf(userById);
-    // console.log(newName + ':::newName:::' + index + 'this is the index');
-    // dummyDb3.splice(1,index,newName)
-    console.log(userById);
+  if (userIndex !== -1) {
+    dummyDb3[userIndex].name = name;
+    return res.status(200).send(dummyDb3[userIndex]);
   } else {
-    return res.status(404).send('id not found');
+    return res.status(404).send('no such record found');
   }
+
+  // const userById: userInfo = dummyDb3.find(
+  //   a => a.id.toString() === id,
+  // ) as userInfo;
+
+  // if (userById) {
+  //   console.log('ready to edit name');
+  //   const { newName } = req.body;
+  //   const index: number = dummyDb3.indexOf(userById);
+  //   // console.log(newName + ':::newName:::' + index + 'this is the index');
+  //   // dummyDb3.splice(1,index,newName)
+  //   console.log(userById);
+  // } else {
+  //   return res.status(404).send('id not found');
+  // }
 
   res.status(200).send('edit a user');
 };

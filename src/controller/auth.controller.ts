@@ -25,18 +25,6 @@ const dummyDb2: accountInfo[] = [
 ];
 
 // // dummy Database
-// const dummyDb = [
-//   {
-//     dbEmail: 'admin@gmail.com',
-//     dbPassword: 'admin',
-//     hashedPw: '$2b$10$I/CyKcMXAQhiCXOUViof4OEHW8YfXlXz0xHj6ESH04cMvKu/BveNC',
-//   },
-//   {
-//     dbEmail: 'admin1@gmail.com',
-//     dbPassword: 'admin1',
-//     hashedPw: '$2b$10$MHgskyF5yHZdk.QbPCb3AOZL405J.oTueDc7UaMwqbX5cWQCjLvDi',
-//   },
-// ];
 
 // function for signup
 export const signUp = async (
@@ -81,7 +69,7 @@ export const signUp = async (
 
       // returning the token while console logging newUser
       console.log(newUser, 'new user created successfully');
-      return res.status(200).json({ token: token });
+      return res.status(201).json({ token: token });
 
       // console.log('pw hashed successfully', hash);
 
@@ -113,8 +101,7 @@ export const loginUser = async (
     // if email found compare hashed password
     try {
       const match = await bcrypt.compare(password, userData.hashedPw);
-      if (match) {
-      } else {
+      if (!match) {
         return res.status(401).send('wrong password'); //return garda, flow is stopped here..makes program efficient
       }
     } catch (error) {
@@ -143,7 +130,7 @@ export const loginUser = async (
       // no need to store token in db like sessions
     } catch (error) {
       console.log(error);
-      return res.send(error);
+      return res.status(500).send('unable to login due to server error');
     }
   }
 };

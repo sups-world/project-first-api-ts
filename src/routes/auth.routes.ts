@@ -1,7 +1,11 @@
 import { Router } from 'express';
 
 import { signUp, loginUser } from '../controller/auth.controller';
-import { userValidationRules, validate } from '../middleware/validators';
+import {
+  loginValidationRules,
+  userValidationRules,
+  validate,
+} from '../middleware/validators';
 
 export const authRoute = Router();
 
@@ -9,4 +13,4 @@ export const authRoute = Router();
 authRoute.post('/signup', userValidationRules, validate, signUp);
 
 // verify token in login
-authRoute.post('/login', loginUser);
+authRoute.post('/login', loginValidationRules, validate, loginUser);

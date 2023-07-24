@@ -36,13 +36,13 @@ export const viewAllPosts = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  try {
-    const allPosts: postInfo[] = dummyPostsdb.map(a => a);
-    // console.log(allPosts);
-    res.send(allPosts);
-  } catch (error) {
-    res.send(error);
+  // const allPosts: postInfo[] = dummyPostsdb.map(a => a);
+  // :postifo[] means allPosts definitely returns postInfo[] i.e cannot be null or undefined..so TS is telling us to handle that
+  const allPosts = dummyPostsdb.map(a => a);
+  if (!allPosts) {
+    return res.status(404).send('no posts found');
   }
+  res.status(200).send(allPosts);
 };
 
 // view single post
@@ -51,17 +51,13 @@ export const viewSinglePost = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const postById: postInfo = dummyPostsdb.find(
-      a => a.id.toString() === id,
-    ) as postInfo;
-    res.send(postById);
-  } catch (error) {
-    console.log(error);
-    res.send(ReferenceError);
+  const postById = dummyPostsdb.find(a => a.id.toString() === id);
+  if (!postById) {
+    return res.status(404).send('no such id found');
   }
+  res.status(200).send(postById);
 };
 
 // TODO:::createdBy should be the logged in user
@@ -78,13 +74,8 @@ export const createPost = async (
     createdBy: createdBy as string,
   };
 
-  try {
-    dummyPostsdb.push(newPost);
-    res.send(dummyPostsdb);
-  } catch (error) {
-    console.log(error);
-    res.send('some problems occured');
-  }
+  dummyPostsdb.push(newPost);
+  res.status(201).send(dummyPostsdb);
 };
 
 // edit post
@@ -93,38 +84,36 @@ export const editPost = async (
   res: express.Response,
   next: NextFunction,
 ) => {
-  try {
-    // check db for the req.body.id
-    // if post exists, then replace the existing data with new data
+  // check db for the req.body.id
+  // if post exists, then replace the existing data with new data
 
-    const { id, title, post, createdBy } = req.body;
-    let editedPost: postInfo = {
-      id: id as number,
-      title: title as string,
-      post: post as string,
-      createdBy: createdBy as string,
-    };
+  const { id } = req.params;
+  const { title, post } = req.body;
 
-    const postById: postInfo = dummyPostsdb.find(
-      a => a.id.toString() === id,
-    ) as postInfo;
-    if (postById) {
-      postById.id = id;
-      postById.title = title;
-      postById.post = post;
-      postById.createdBy = createdBy;
-    } else {
-      res.send('no such id found');
-    }
+  let editedPost: postInfo | unknown = {
+    id: id as unknown as string,
+    title: title as string,
+    post: post as string,
+  };
 
-    // replace the data in the index with id-1
-    dummyPostsdb[id - 1] = editedPost;
-    console.log(dummyPostsdb);
-    res.send(dummyPostsdb);
-  } catch (error) {
-    console.log(error);
-    res.send('some problems occured');
+  const postId = dummyPostsdb.findIndex(a => a.id.toString() === id);
+
+  // as postInfo means postById returns postInfo always..but if .find() is undefined i.e id doesn't exist then program doesn't know what to do
+  // for that we need to define what to do in that case
+  // no need for :postInfo in postById because it can be undefined as well
+
+  if (postId === -1) {
+    return res.status(404).send('no such id exists');
   }
+  console.log(':::::::::');
+  console.log(postId);
+  dummyPostsdb[postId].title = title;
+  dummyPostsdb[postId].post = post;
+
+  // replace the data in the index with id-1
+  // dummyPostsdb[id - 1] = editedPost;
+  console.log(dummyPostsdb);
+  res.status(200).send('edited successfully');
 };
 
 //delete post by id
@@ -137,33 +126,20 @@ export const deletePost = async (
   // if id = dummyPostsdb.find( () => {if id ==a.id then dummyPostsdb.splice(dummydb.indexOf(a),1)})
   // params to access url data
   const { id } = req.params;
-  try {
-    // dummyPostsdb.find(data => {
-    //   if (data.id.toString() === id) {
-    //     dummyPostsdb.splice(dummyPostsdb.indexOf(data), 1);
-    //     console.log('post deleted successfully');
-    //     res.send(dummyPostsdb);
-    //   } else {
-    //     console.log('post id did not match');
-    //   }
-    // });
+  // const postById: postInfo = dummyPostsdb.find(
+  //   a => a.id.toString() === id,
+  // ) as postInfo;
+  // above code gives error..postbyId cannot be undefined acc to above code..but if id doesn't match it becomes undefined
+  // ts is telling us to handle that condition
 
-    const postById: postInfo = dummyPostsdb.find(
-      a => a.id.toString() === id,
-    ) as postInfo;
+  const postById = dummyPostsdb.find(a => a.id.toString() === id);
 
-    // console.log(postById, 'to be deleted');
+  // console.log(postById, 'to be deleted');
 
-    if (postById) {
-      dummyPostsdb.splice(dummyPostsdb.indexOf(postById), 1);
-      console.log('post deleted successfully');
-      res.send(`post deleted successfully`);
-    } else {
-      console.log('id does not exist');
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
-    res.send('error occured in delete');
+  if (postById) {
+    dummyPostsdb.splice(dummyPostsdb.indexOf(postById), 1);
+    res.status(200).send(`post deleted successfully`);
+  } else {
+    res.status(404).send('id not found');
   }
 };

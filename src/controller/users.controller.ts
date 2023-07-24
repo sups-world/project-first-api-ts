@@ -20,6 +20,11 @@ const dummyDb3: userInfo[] = [
     name: 'shyam',
     email: 'shyam@gmail.com',
   },
+  {
+    id: 3,
+    name: 'hari',
+    email: 'hari@gmail.com',
+  },
 ];
 
 export const viewAllUsers = async (
@@ -28,13 +33,8 @@ export const viewAllUsers = async (
   next: express.NextFunction,
 ) => {
   // access db, get list of all users
-  try {
-    const allUsers: userInfo[] = dummyDb3.map(a => a);
-    res.send(allUsers);
-  } catch (error) {
-    console.log(error);
-    res.send('error occured here');
-  }
+  const allUsers: userInfo[] = dummyDb3.map(a => a);
+  res.send(allUsers);
 };
 
 // view single user by name
@@ -44,23 +44,18 @@ export const viewSingleUser = async (
   next: NextFunction,
 ) => {
   // access db, findOne
-  try {
-    const { name } = req.query;
+  const { name } = req.query;
 
-    const userByName: userInfo = dummyDb3.find(
-      a => a.name.toLocaleLowerCase() === name,
-    ) as userInfo;
+  const userByName: userInfo = dummyDb3.find(
+    a => a.name.toLocaleLowerCase() === name,
+  ) as userInfo;
 
-    if (userByName) {
-      console.log('user exists');
-      res.send(userByName);
-    } else {
-      console.log('no such user exists');
-      res.send('No such user exists');
-    }
-  } catch (error) {
-    console.log(error);
-    res.send('error viewing single user');
+  if (userByName) {
+    console.log('user exists');
+    res.send(userByName);
+  } else {
+    console.log('no such user exists');
+    res.send('No such user exists');
   }
 };
 
@@ -71,54 +66,47 @@ export const editUser = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  // accessdb,edit user
-  // id from params, req.body.name has username
-  try {
-    const { id, name } = req.query;
-    console.log(id, name);
+  const { id, name } = req.query;
+  console.log(id, name);
 
-    const userById: userInfo = dummyDb3.find(
-      a => a.id.toString() === id,
-    ) as userInfo;
+  const userById: userInfo = dummyDb3.find(
+    a => a.id.toString() === id,
+  ) as userInfo;
 
-    if (userById) {
-      console.log('ready to edit name');
-    } else {
-      console.log('sorry! no such record exists');
-    }
-  } catch (error) {
-    console.log('error occured while editing');
-    res.send('error occured while editing');
+  if (userById) {
+    console.log('ready to edit name');
+    const { newName } = req.body;
+    const index: number = dummyDb3.indexOf(userById);
+    // console.log(newName + ':::newName:::' + index + 'this is the index');
+    // dummyDb3.splice(1,index,newName)
+    console.log(userById);
+  } else {
+    return res.status(404).send('id not found');
   }
 
-  res.send('edit a user');
+  res.status(200).send('edit a user');
 };
 
+// deleting a user
 export const deleteUser = async (
   req: express.Request,
   res: express.Response,
   next: NextFunction,
 ) => {
   // accessdb, delete a user
-  try {
-    const { id } = req.params;
-    console.log(id);
-    const userById: userInfo = dummyDb3.find(
-      a => a.id.toString() === id,
-    ) as userInfo;
+  const { id } = req.params;
+  console.log(id);
+  const userById: userInfo = dummyDb3.find(
+    a => a.id.toString() === id,
+  ) as userInfo;
 
-    if (userById) {
-      console.log(userById);
-      dummyDb3.splice(dummyDb3.indexOf(userById), 1);
-      console.log('post deleted successfully');
+  if (userById) {
+    console.log(userById);
+    dummyDb3.splice(dummyDb3.indexOf(userById), 1);
+    console.log('post deleted successfully');
 
-      res.send('deleted successfully');
-    } else {
-      console.log('unable to find user');
-      res.send('unable to find user');
-    }
-  } catch (error) {
-    console.log(error);
-    res.send('error occured here');
+    res.status(200).send('deleted successfully');
+  } else {
+    res.status(404).send('user not found');
   }
 };

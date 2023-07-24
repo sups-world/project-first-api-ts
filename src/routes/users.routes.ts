@@ -10,14 +10,14 @@ import {
 
 export const usersRoute = Router();
 
-usersRoute.get('/all', viewAllUsers);
+usersRoute.get('/', viewAllUsers);
 
 // using query here
-usersRoute.get('/?', viewSingleUser);
+usersRoute.get('/:id', viewSingleUser);
 
-usersRoute.patch('/edit?', editUser);
+usersRoute.patch('/:id', editUser);
 
-usersRoute.delete('/delete/:id', deleteUser);
+usersRoute.delete('/:id', deleteUser);
 
 // code to debug
 // (_, __, next) => {

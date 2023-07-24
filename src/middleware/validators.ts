@@ -4,14 +4,22 @@ import { body, validationResult } from 'express-validator';
 // the array holds validation check for each body(req)
 
 export const userValidationRules = [
-  //TODO:::change this function to array>>>>>
-
   body('name')
+    .isString()
     .trim()
     .notEmpty()
-    .isString()
     .isLength({ min: 2 })
     .withMessage('name cannot be empty'),
+  body('email').trim().isEmail().withMessage('this is not a valid email'),
+  body('password')
+    .isLength({ min: 5, max: 12 })
+    .withMessage(
+      'must be 5 characters or more..must not be more than 12 characters',
+    ),
+];
+
+// login validation
+export const loginValidationRules = [
   body('email').trim().isEmail().withMessage('this is not a valid email'),
   body('password')
     .isLength({ min: 5, max: 12 })

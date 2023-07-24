@@ -17,10 +17,6 @@ app.use('/', routes);
 
 // error handler at the end of use and routes
 // app.use(errorHandler);
-app.listen(port, async () => {
-  try {
-    console.log(`Server is running on port ${port}`);
-  } catch (error) {
-    console.log(`unable to liseten on port ${port}`);
-  }
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

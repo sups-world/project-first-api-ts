@@ -11,13 +11,13 @@ import {
 
 export const postsRoute = Router();
 
-postsRoute.get('/all', viewAllPosts);
+postsRoute.get('/', viewAllPosts);
 
 postsRoute.get('/:id', viewSinglePost);
 
-postsRoute.post('/new/:id', createPost);
+postsRoute.post('/:id', createPost);
 
-// put or patch
-postsRoute.patch('/edit/:id', editPost);
+// put or patch::patch for changing only partial...put for completely changing or creating new
+postsRoute.put('/:id', editPost);
 
 postsRoute.delete('/:id', deletePost);

@@ -5,7 +5,7 @@ export const defaultHome = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  res.send('homepage here');
+  return res.status(200).send('homepage here');
   // throw new Error('this is an error');
   // const b = await
   // try {

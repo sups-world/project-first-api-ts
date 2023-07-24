@@ -67,16 +67,22 @@ export const createPost = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id, title, post, createdBy } = req.body;
+  let id = 0;
+  const { title, post, createdBy } = req.body;
+  if (dummyPostsdb.length === 0) {
+    id = 1;
+  } else {
+    id = dummyPostsdb[dummyPostsdb.length - 1].id + 1;
+  }
   let newPost: postInfo = {
-    id: id as number,
+    id,
     title: title as string,
     post: post as string,
     createdBy: createdBy as string,
   };
 
   dummyPostsdb.push(newPost);
-  res.status(201).send(dummyPostsdb);
+  res.status(201).send(newPost);
 };
 
 // edit post
@@ -132,7 +138,6 @@ export const deletePost = async (
   // ) as postInfo;
   // above code gives error..postbyId cannot be undefined acc to above code..but if id doesn't match it becomes undefined
   // ts is telling us to handle that condition
-
   // const postById = dummyPostsdb.find(a => a.id.toString() === id);
   const postIndex = dummyPostsdb.findIndex(a => a.id.toString() === id);
 

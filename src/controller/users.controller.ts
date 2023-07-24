@@ -82,23 +82,21 @@ export const deleteUser = async (
   res: express.Response,
   next: NextFunction,
 ) => {
-  // accessdb, delete a user
+  // accessdb,get id from params,compare to db,find index of that id, splice in that index
   const { id } = req.params;
-  console.log(id);
+  // console.log(id);
   // const userById: userInfo = dummyDb3.find(
   //   a => a.id.toString() === id,
   // ) as userInfo;
   // above code will always return userInfo.That means if it cannot find the user, it won't return undefined.
 
+  // console.log(dummyDb3.indexOf(userById));
   const userIndex = dummyDb3.findIndex(a => a.id.toString() === id);
 
   if (userIndex !== -1) {
-    // console.log(userIndex);
     // dummyDb3.splice(dummyDb3.indexOf(userIndex), 1);
     const delItem = dummyDb3[userIndex];
     dummyDb3.splice(userIndex, 1);
-    console.log('post deleted successfully');
-
     res.status(200).send(delItem);
   } else {
     res.status(404).send('user not found');

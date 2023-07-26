@@ -1,6 +1,8 @@
 import express from 'express';
 import bcrypt, { hash, compareSync } from 'bcrypt';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import { User } from '../models/user.model';
+import { UserInfo } from '../interface/user.interface';
 
 // interface
 interface accountInfo {
@@ -35,50 +37,22 @@ export const signUp = async (
   // init new user
   //password hashing
   // inside req.body we get name,email,password
-
   // destructuring must be with the same names as in the request
   const { name, email, password } = req.body;
-
   bcrypt
     .hash(password, 10)
     .then(hash => {
-      // store hash in db
-
-      // console.log(newUser);
-
-      const newUser: accountInfo = {
-        name: name,
-        email: email.toLowerCase(), //sanitization
-        hashedPw: hash,
+      const newUser1 = {
+        name: name.toLowerCase(),
+        email: email.toLowerCase(),
+        password: hash,
       };
-
-      // write to db
-      dummyDb2.push(newUser);
-      // res.send(dummyDb2);
-      // pushing to dummy db
-
-      // creating a new token
-      const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
-        expiresIn: '7 days',
-      });
-      console.log(token, 'this is token');
-
-      // return token, no need to save token..front end stores the token
-      // saving token
-      // newUser.token = token;
-
-      // returning the token while console logging newUser
-      console.log(newUser, 'new user created successfully');
-      return res.status(201).json({ token: token });
-
-      // console.log('pw hashed successfully', hash);
-
-      // response holds newUser json object which can be derived again
-      res.json(newUser);
+      User.addUsers(name, email, password);
+      return res.end();
     })
     .catch(err => {
       console.log(err);
-      return res.send(err);
+      return res.status(500).send(err);
     });
 };
 

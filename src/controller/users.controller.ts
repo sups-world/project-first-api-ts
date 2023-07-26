@@ -115,13 +115,19 @@ export const viewAllUsers = (
   res.status(200).send(users);
 };
 
+//view by id in params
 export const viewSingleUser = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const users = User.findAll();
-  res.status(200).send(users);
+  const { id } = req.params;
+  const users = User.findById(+id); //can use Number() typecasting as well
+  if (users) {
+    res.status(200).send(users);
+  } else {
+    res.status(400).send('no such record found');
+  }
 };
 
 export const editUser = (
@@ -129,8 +135,10 @@ export const editUser = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const users = User.findAll();
-  res.status(200).send(users);
+  const { id } = req.params;
+  const { name } = req.body;
+  const users = User.edit(Number(id), name);
+  res.status(201).send(users);
 };
 
 export const deleteUser = (

@@ -141,7 +141,7 @@ export const signup = async (
 
   const existingUser = User.findFirst(a => a.email === email);
   if (existingUser) {
-    res.status(400).send('email already used');
+    return res.status(400).send('email already used');
   }
 
   const hashedPwd = await bcrypt.hash(password, 10);

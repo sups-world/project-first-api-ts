@@ -32,7 +32,13 @@ export class User {
 
     // return console.log(addData);
   }
-  // static findAll();
+  static viewAll() {
+    if (data) {
+      return data;
+    } else {
+      return console.log('no data found');
+    }
+  }
   // static findById();
   // static editById();
   // static deleteByID();

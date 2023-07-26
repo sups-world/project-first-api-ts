@@ -1,5 +1,6 @@
 import express, { NextFunction } from 'express';
-import { userInfo } from 'os';
+import { UserInfo } from '../interface/user.interface';
+import { User } from '../models/user.model';
 
 // interface
 interface userInfo {
@@ -34,7 +35,8 @@ export const viewAllUsers = async (
   next: express.NextFunction,
 ) => {
   // access db, get list of all users
-  res.status(200).send(dummyDb3);
+  const people = User.viewAll();
+  res.send(people);
 };
 
 // view single user by id

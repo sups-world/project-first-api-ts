@@ -39,6 +39,9 @@ export const signUp = async (
   // inside req.body we get name,email,password
   // destructuring must be with the same names as in the request
   const { name, email, password } = req.body;
+
+  //check if email is unique
+
   bcrypt
     .hash(password, 10)
     .then(hash => {
@@ -48,6 +51,20 @@ export const signUp = async (
         password: hash,
       };
       User.addUsers(name, email, password);
+      //  // creating a new token
+      //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
+      //   expiresIn: '7 days',
+      // });
+      // console.log(token, 'this is token');
+
+      // // return token, no need to save token..front end stores the token
+      // // saving token
+      // // newUser.token = token;
+
+      // // returning the token while console logging newUser
+      // console.log(newUser, 'new user created successfully');
+      // return res.status(201).json({ token: token });
+
       return res.end();
     })
     .catch(err => {

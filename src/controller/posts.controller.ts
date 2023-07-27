@@ -54,9 +54,9 @@ export const editPost = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const { title, post } = req.body as { title: string; post: string };
+  const { title, posts } = req.body as { title: string; posts: string };
 
-  const onePost = Post.edit(parseInt(id), { title, post });
+  const onePost = Post.edit(parseInt(id), { title, posts });
   if (onePost) {
     res.send(onePost);
   } else {

@@ -7,7 +7,7 @@ import {
   editUser,
   deleteUser,
 } from '../controller/users.controller';
-import { nameValidationRules, validate } from '../middleware/validators';
+import { userValidationRules, validate } from '../middleware/validators';
 
 export const usersRoute = Router();
 
@@ -16,7 +16,7 @@ usersRoute.get('/', viewAllUsers);
 usersRoute.get('/:id', viewSingleUser);
 
 //TODO::validate name from req.body
-usersRoute.patch('/:id', nameValidationRules, validate, editUser);
+usersRoute.patch('/:id', userValidationRules.name, validate, editUser);
 
 usersRoute.delete('/:id', deleteUser);
 

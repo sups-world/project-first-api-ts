@@ -3,19 +3,33 @@ import { body, validationResult } from 'express-validator';
 
 // the array holds validation check for each body(req)
 
+export const nameValidationRules = body('name')
+  .isString()
+  .trim()
+  .notEmpty()
+  .isLength({ min: 2 })
+  .withMessage('name cannot be empty or less than 2 characters');
+
+export const emailValidationRules = body('email')
+  .trim()
+  .isEmail()
+  .withMessage('this is not a valid email');
+export const pwdValidationRules = body('password')
+  .isLength({ min: 5, max: 12 })
+  .withMessage(
+    ' password must be 5 characters or more..must not be more than 12 characters',
+  );
+
 export const userValidationRules = [
-  body('name')
-    .isString()
-    .trim()
-    .notEmpty()
-    .isLength({ min: 2 })
-    .withMessage('name cannot be empty'),
-  body('email').trim().isEmail().withMessage('this is not a valid email'),
-  body('password')
-    .isLength({ min: 5, max: 12 })
-    .withMessage(
-      'must be 5 characters or more..must not be more than 12 characters',
-    ),
+  // body('name')
+  //   .isString()
+  //   .trim()
+  //   .notEmpty()
+  //   .isLength({ min: 2 })
+  //   .withMessage('name cannot be empty'),
+  nameValidationRules,
+  emailValidationRules,
+  pwdValidationRules,
 ];
 
 // login validation

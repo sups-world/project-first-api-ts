@@ -1,8 +1,6 @@
 import express, { NextFunction } from 'express';
 import { Post } from '../models/post.model';
 
-// import { Iposts } from '../interface/posts.interface';
-
 export const createPost = async (
   req: express.Request,
   res: express.Response,

@@ -5,12 +5,15 @@ export class Post {
   //methods
 
   //add post
-  static add(data: Omit<Iposts, 'postId'>): Iposts | null {
+  static add(data: Omit<Iposts, 'postId' | 'creator'>): Iposts | null {
     let postId = 1;
+    let creator = 1;
     if (posts.length) {
       postId = posts[posts.length - 1].postId + 1;
+      creator = posts[posts.length - 1].postId + 1;
     }
-    const post = { postId, ...data };
+
+    const post = { postId, creator, ...data };
 
     posts.push(post);
     return post;
@@ -39,8 +42,8 @@ export class Post {
     if (data.title) {
       oldPost.title = data.title;
     }
-    if (data.posts) {
-      oldPost.posts = data.posts;
+    if (data.body) {
+      oldPost.body = data.body;
     }
 
     return oldPost;

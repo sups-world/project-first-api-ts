@@ -1,39 +1,35 @@
 import express, { NextFunction } from 'express';
 import { Post } from '../models/post.model';
 
-import { Iposts } from '../interface/posts.interface';
+// import { Iposts } from '../interface/posts.interface';
 
 export const createPost = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { title, posts, creator } = req.body as {
+  const { title, body } = req.body as {
     title: string;
-    posts: string;
-    creator: string;
+    body: string;
   };
   const createdDate = new Date();
 
   //creator name how?
   //  const creator =
-  const post = Post.add({ title, posts, createdDate, creator });
+  const post = Post.add({ title, body, createdDate });
   res.status(201).send(post);
 };
 
+//viewAllPosts
 export const viewAllPosts = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   const allPosts = Post.view();
-  if (allPosts) {
-    res.send(allPosts);
-  } else {
-    res.send('no records found');
-  }
+  res.send(allPosts);
 };
-
+//view post by id
 export const viewSinglePost = async (
   req: express.Request,
   res: express.Response,
@@ -44,25 +40,28 @@ export const viewSinglePost = async (
   if (onePost) {
     res.send(onePost);
   } else {
-    res.send('no records found');
+    res.status(400).send('no records found');
   }
 };
 
+//edit post title and body
 export const editPost = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const { title, posts } = req.body as { title: string; posts: string };
+  const { title, body } = req.body as { title: string; body: string };
 
-  const onePost = Post.edit(parseInt(id), { title, posts });
+  const onePost = Post.edit(parseInt(id), { title, body });
   if (onePost) {
     res.send(onePost);
   } else {
     res.status(400).send('no such record found');
   }
 };
+
+//delete post by id
 export const deletePost = async (
   req: express.Request,
   res: express.Response,

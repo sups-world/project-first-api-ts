@@ -5,26 +5,26 @@ import { User } from '../models/user.model';
 // import { UserInfo } from '../interface/user.interface';
 
 // interface
-interface accountInfo {
-  name: string;
-  email: string;
-  hashedPw: string;
-}
+// interface accountInfo {
+//   name: string;
+//   email: string;
+//   hashedPw: string;
+// }
 
 //  dummy db
 // to define an array of objects
-const dummyDb2: accountInfo[] = [
-  {
-    name: 'ram',
-    email: 'ram@gmail.com',
-    hashedPw: '$2b$10$uxhDMf9MVy5l5YjC5CGQSukH6D4NOtguB99QLnZr83LFtDJCDOL2m',
-  },
-  {
-    name: 'shyam',
-    email: 'shyam@gmail.com',
-    hashedPw: '$2b$10$uxhDMf9MVy5l5YjC5CGQSukH6D4NOtguB99QLnZr83LFtDJCDOL2m', //12345
-  },
-];
+// const dummyDb2: accountInfo[] = [
+//   {
+//     name: 'ram',
+//     email: 'ram@gmail.com',
+//     hashedPw: '$2b$10$uxhDMf9MVy5l5YjC5CGQSukH6D4NOtguB99QLnZr83LFtDJCDOL2m',
+//   },
+//   {
+//     name: 'shyam',
+//     email: 'shyam@gmail.com',
+//     hashedPw: '$2b$10$uxhDMf9MVy5l5YjC5CGQSukH6D4NOtguB99QLnZr83LFtDJCDOL2m', //12345
+//   },
+// ];
 
 // // dummy Database
 

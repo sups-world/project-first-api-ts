@@ -5,7 +5,7 @@ export class Post {
   //methods
 
   //add post
-  static add(data: Omit<Iposts, 'postId'>): Iposts {
+  static add(data: Omit<Iposts, 'postId'>): Iposts | null {
     let postId = 1;
     if (posts.length) {
       postId = posts[posts.length - 1].postId + 1;
@@ -36,7 +36,7 @@ export class Post {
     if (foundIndex === -1) return null;
 
     const oldPost = posts[foundIndex];
-    oldPost.posts = data.posts;
+    // oldPost.posts = data.posts;
 
     return oldPost;
   }

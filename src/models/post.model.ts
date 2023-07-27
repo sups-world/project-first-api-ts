@@ -15,4 +15,16 @@ export class Post {
     posts.push(post);
     return post;
   }
+
+  //view all posts
+  static view() {
+    return posts;
+  }
+
+  //view posts by id
+  static viewOne(id: number): Iposts | null {
+    const found = posts.find(a => a.postId === id);
+    if (!found) return null;
+    return found;
+  }
 }

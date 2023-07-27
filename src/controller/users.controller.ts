@@ -137,23 +137,8 @@ export const editUser = (
 ) => {
   const { id } = req.params;
 
-  const { name, email, password } = req.body;
-  if (name) {
-    name as string;
-  } else {
-    name as undefined;
-  }
-  if (email) {
-    email as string;
-  } else {
-    email as undefined;
-  }
-  if (password) {
-    password as string;
-  } else {
-    password as undefined;
-  }
-  const users = User.edit(Number(id), { name, email, password });
+  const { name } = req.body as { name: string };
+  const users = User.edit(parseInt(id), { name });
   res.status(201).send(users);
 };
 

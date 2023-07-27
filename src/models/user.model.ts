@@ -96,12 +96,6 @@ export class User {
     if (data.name) {
       oldUser.name = data.name;
     }
-    if (data.email) {
-      oldUser.email = data.email;
-    }
-    if (data.password) {
-      oldUser.password = data.password;
-    }
     //when we chang ein oldUser, users[foundIndex] also changes..oldUser stores the reference of users
     //return updated user
     return oldUser;
@@ -114,7 +108,7 @@ export class User {
     if (foundIndex === -1) return null;
 
     //copy user object to be deleted for returning
-    const user = users[foundIndex];
+    const user = { ...users[foundIndex] };
 
     //remove userfrom the list i.e delete user
     users.splice(foundIndex, 1);

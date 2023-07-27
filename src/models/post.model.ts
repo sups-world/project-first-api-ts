@@ -36,7 +36,12 @@ export class Post {
     if (foundIndex === -1) return null;
 
     const oldPost = posts[foundIndex];
-    // oldPost.posts = data.posts;
+    if (data.title) {
+      oldPost.title = data.title;
+    }
+    if (data.posts) {
+      oldPost.posts = data.posts;
+    }
 
     return oldPost;
   }
@@ -46,7 +51,8 @@ export class Post {
     const foundIndex = posts.findIndex(a => a.postId === id);
     if (foundIndex === -1) return null;
 
-    const post = posts[foundIndex];
+    //ISSUE:delete not working
+    const post = { ...posts[foundIndex] };
 
     posts.splice(foundIndex, 1);
     return post;

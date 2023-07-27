@@ -126,7 +126,7 @@ export const viewSingleUser = (
   if (users) {
     res.status(200).send(users);
   } else {
-    res.status(400).send('no such record found');
+    res.status(404).send('no such record found');
   }
 };
 
@@ -139,7 +139,7 @@ export const editUser = (
 
   const { name } = req.body as { name: string };
   const users = User.edit(parseInt(id), { name });
-  res.status(201).send(users);
+  res.status(200).send(users);
 };
 
 export const deleteUser = (

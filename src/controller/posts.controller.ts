@@ -11,10 +11,11 @@ export const createPost = async (
     body: string;
   };
   const createdDate = new Date();
-
+  //after authentication change this
+  const creator = 1;
   //creator name how?
   //  const creator =
-  const post = Post.add({ title, body, createdDate });
+  const post = Post.add({ title, body, creator, createdDate });
   res.status(201).send(post);
 };
 
@@ -38,7 +39,7 @@ export const viewSinglePost = async (
   if (onePost) {
     res.send(onePost);
   } else {
-    res.status(400).send('no records found');
+    res.status(404).send('no records found');
   }
 };
 
@@ -55,7 +56,7 @@ export const editPost = async (
   if (onePost) {
     res.send(onePost);
   } else {
-    res.status(400).send('no such record found');
+    res.status(404).send('no such record found');
   }
 };
 
@@ -70,6 +71,6 @@ export const deletePost = async (
   if (onePost) {
     res.send(onePost);
   } else {
-    res.status(400).send('no record found');
+    res.status(404).send('no record found');
   }
 };

@@ -5,15 +5,14 @@ export class Post {
   //methods
 
   //add post
-  static add(data: Omit<Iposts, 'postId' | 'creator'>): Iposts | null {
+  static add(data: Omit<Iposts, 'postId'>): Iposts | null {
     let postId = 1;
     let creator = 1;
     if (posts.length) {
       postId = posts[posts.length - 1].postId + 1;
-      creator = posts[posts.length - 1].postId + 1;
     }
 
-    const post = { postId, creator, ...data };
+    const post = { postId, ...data };
 
     posts.push(post);
     return post;

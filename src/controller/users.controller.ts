@@ -136,8 +136,24 @@ export const editUser = (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const { name } = req.body;
-  const users = User.edit(Number(id), name);
+
+  const { name, email, password } = req.body;
+  if (name) {
+    name as string;
+  } else {
+    name as undefined;
+  }
+  if (email) {
+    email as string;
+  } else {
+    email as undefined;
+  }
+  if (password) {
+    password as string;
+  } else {
+    password as undefined;
+  }
+  const users = User.edit(Number(id), { name, email, password });
   res.status(201).send(users);
 };
 

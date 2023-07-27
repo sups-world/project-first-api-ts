@@ -77,18 +77,34 @@ export class User {
   }
 
   //edit name
-  static edit(id: number, data: Omit<UserInfo, 'id'>): UserInfo | null {
+  static edit(
+    id: number,
+    data: Partial<Omit<UserInfo, 'id'>>,
+  ): UserInfo | null {
+    // static edit(id: number, rname: string): UserInfo | null {
     const foundIndex = users.findIndex(user => user.id === id);
     if (foundIndex === -1) return null;
 
-    //create new user object
-    const user = { id, ...data };
+    // //create new user object
 
-    //replace existing user by new user object
-    users[foundIndex] = user;
+    // const user = { id, ...data };
 
+    // //replace existing user by new user object
+    // users[foundIndex] = user;
+
+    const oldUser = users[foundIndex];
+    if (data.name) {
+      oldUser.name = data.name;
+    }
+    if (data.email) {
+      oldUser.email = data.email;
+    }
+    if (data.password) {
+      oldUser.password = data.password;
+    }
+    //when we chang ein oldUser, users[foundIndex] also changes..oldUser stores the reference of users
     //return updated user
-    return user;
+    return oldUser;
   }
 
   //delete user

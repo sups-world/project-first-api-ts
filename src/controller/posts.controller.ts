@@ -25,7 +25,14 @@ export const viewAllPosts = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
-) => {};
+) => {
+  const allPosts = Post.view();
+  if (allPosts) {
+    res.send(allPosts);
+  } else {
+    res.send('no records found');
+  }
+};
 export const viewSinglePost = async (
   req: express.Request,
   res: express.Response,

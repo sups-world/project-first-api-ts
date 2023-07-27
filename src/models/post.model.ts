@@ -27,4 +27,28 @@ export class Post {
     if (!found) return null;
     return found;
   }
+  //edit post
+  static edit(
+    id: number,
+    data: Partial<Omit<Iposts, 'postId'>>,
+  ): Iposts | null {
+    const foundIndex = posts.findIndex(a => a.postId === id);
+    if (foundIndex === -1) return null;
+
+    const oldPost = posts[foundIndex];
+    oldPost.posts = data.posts;
+
+    return oldPost;
+  }
+
+  //delete post
+  static delete(id: number): Iposts | null {
+    const foundIndex = posts.findIndex(a => a.postId === id);
+    if (foundIndex === -1) return null;
+
+    const post = posts[foundIndex];
+
+    posts.splice(foundIndex, 1);
+    return post;
+  }
 }

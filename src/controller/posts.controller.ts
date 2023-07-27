@@ -68,7 +68,7 @@ export const deletePost = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id } = req.body;
+  const { id } = req.params;
   const onePost = Post.delete(parseInt(id));
   if (onePost) {
     res.send(onePost);

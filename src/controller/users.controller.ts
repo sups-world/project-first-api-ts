@@ -147,6 +147,7 @@ export const deleteUser = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const users = User.findAll();
-  res.status(200).send(users);
+  const { id } = req.params;
+  const user = User.delete(parseInt(id));
+  res.status(200).send(user);
 };

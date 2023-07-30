@@ -22,6 +22,14 @@ export const userValidationRules = {
   id: param('id').isNumeric().toInt().withMessage(' should be number'),
 };
 
+export const postValidationRules = {
+  title: body('title')
+    .notEmpty()
+    .isString()
+    .withMessage('title cannot be empty...only string is allowed'),
+  body: body('body').isString().withMessage('only string is accepted in body'),
+};
+
 // export const nameValidationRules = body('name')
 //   .isString()
 //   .trim()
@@ -74,6 +82,7 @@ export const validate = (
     return next();
   }
 
+  console.log(ermsg);
   const extractedErrors: any = [];
 
   ermsg

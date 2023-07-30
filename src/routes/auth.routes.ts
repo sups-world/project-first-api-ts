@@ -1,25 +1,20 @@
 import { Router } from 'express';
 
 import { signup, login } from '../controller/auth.controller';
-import { userValidationRules, validate } from '../middleware/validators';
+import {
+  validate,
+  userValidationRules as rules,
+} from '../middleware/validators';
 
 export const authRoute = Router();
 
 // adding validator before signUp controller
 authRoute.post(
   '/signup',
-  userValidationRules.name,
-  userValidationRules.email,
-  userValidationRules.password,
+  [rules.name, rules.email, rules.password],
   validate,
   signup,
 );
 
 // verify token in login
-authRoute.post(
-  '/login',
-  userValidationRules.email,
-  userValidationRules.password,
-  validate,
-  login,
-);
+authRoute.post('/login', [rules.email, rules.password], validate, login);

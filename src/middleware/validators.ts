@@ -1,5 +1,5 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 
 // the array holds validation check for each body(req)..this is for previous code
 
@@ -19,6 +19,7 @@ export const userValidationRules = {
     .withMessage(
       'password must be 5 characters or more..must not be more than 12 characters',
     ),
+  id: param('id').isNumeric().toInt().withMessage(' should be number'),
 };
 
 // export const nameValidationRules = body('name')
@@ -67,6 +68,7 @@ export const validate = (
   next: express.NextFunction,
 ) => {
   const ermsg = validationResult(req);
+  // console.log('errors:', ermsg);
   // error xina vane go to next flow
   if (ermsg.isEmpty()) {
     return next();

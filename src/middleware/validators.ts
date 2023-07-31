@@ -25,9 +25,11 @@ export const userValidationRules = {
 export const postValidationRules = {
   title: body('title')
     .notEmpty()
+    .trim()
     .isString()
     .withMessage('title cannot be empty...only string is allowed'),
   body: body('body').isString().withMessage('only string is accepted in body'),
+  id: param('id').isNumeric().toInt().withMessage(' should be number'),
 };
 
 // export const nameValidationRules = body('name')

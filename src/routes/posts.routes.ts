@@ -19,7 +19,7 @@ postsRoute.get('/', viewAllPosts);
 
 postsRoute.get('/:id', viewSinglePost);
 
-postsRoute.post('/', [rules.title, rules.body], validate, createPost);
+postsRoute.post('/', [rules.id, rules.title, rules.body], validate, createPost);
 
 // put or patch::patch for changing only partial...put for completely changing or creating new
 postsRoute.put('/:id', editPost);

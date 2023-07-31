@@ -74,3 +74,13 @@ export const deletePost = async (
     res.status(404).send('no record found');
   }
 };
+
+// //view only own posts
+// export const ownPost = async (
+//   req: express.Request,
+//   res: express.Response,
+//   next: express.NextFunction,
+// ) => {
+//   const allPosts = Post.view();
+//   const ownPosts = allPosts.filter();
+// };

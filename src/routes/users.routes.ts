@@ -12,9 +12,11 @@ import {
   validate,
 } from '../middleware/validators';
 
+import { authenticateToken as authToken } from '../middleware/authToken';
+
 export const usersRoute = Router();
 
-usersRoute.get('/', viewAllUsers);
+usersRoute.get('/', authToken, viewAllUsers);
 
 usersRoute.get('/:id', viewSingleUser);
 

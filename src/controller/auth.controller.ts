@@ -147,7 +147,25 @@ export const signup = async (
   const hashedPwd = await bcrypt.hash(password, 10);
   const user = User.add({ email, name, password: hashedPwd });
 
-  res.status(201).send(user);
+  //  // creating a new token
+  //       //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
+  //       //   expiresIn: '7 days',
+  //       // });
+  //       // console.log(token, 'this is token');
+
+  //       // // return token, no need to save token..front end stores the token
+  //       // // saving token
+  //       // // newUser.token = token;
+
+  //       // // returning the token while console logging newUser
+  //       // console.log(newUser, 'new user created successfully');
+  //       // return res.status(201).json({ token: token });
+
+  const accessToken = jwt.sign(user, process.env.SECRET_KEY as string, {
+    expiresIn: '15s',
+  });
+
+  res.status(201).json({ accessToken: accessToken, user });
 };
 
 //sign in module
@@ -170,5 +188,5 @@ export const login = async (
     res.status(401).send('Invalid email or password');
   }
 
-  const token = jwt.sign({ id: user!.id }, 'SECRETKEY');
+  const token = jwt.sign({ id: user!.id }, process.env.SECRET_KEY as string);
 };

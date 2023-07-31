@@ -18,3 +18,24 @@
 //   //   req.user = decoded;
 //   return next();
 // };
+
+import express from 'express';
+import jwt from 'jsonwebtoken';
+
+export const authenticateToken = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  //Bearer TOKEN
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+  //user is the value we serialized, const user = {name:username}
+  jwt.verify(token, process.env.SECRET_KEY as string, err => {
+    console.log(err);
+    if (err) return res.sendStatus(403);
+
+    next(); //next function example:viewAllPosts in routes
+  });
+};

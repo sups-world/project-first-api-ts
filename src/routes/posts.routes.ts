@@ -4,18 +4,21 @@ import {
   validate,
 } from '../middleware/validators';
 
+import { authenticateToken as tokenAuth } from '../middleware/authToken';
+
 import { Router } from 'express';
 import {
   createPost,
   deletePost,
   editPost,
+  // ownPost,
   viewAllPosts,
   viewSinglePost,
 } from '../controller/posts.controller';
 
 export const postsRoute = Router();
 
-postsRoute.get('/', viewAllPosts);
+postsRoute.get('/', tokenAuth, viewAllPosts);
 
 postsRoute.get('/:id', viewSinglePost);
 
@@ -25,3 +28,5 @@ postsRoute.post('/', [rules.id, rules.title, rules.body], validate, createPost);
 postsRoute.put('/:id', editPost);
 
 postsRoute.delete('/:id', deletePost);
+
+// postsRoute.get('/own', tokenAuth, ownPost);

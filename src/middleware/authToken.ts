@@ -32,8 +32,12 @@ export const authenticateToken = (
   //Bearer TOKEN
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null)
-    return res.status(401).send('Not authorized to perform this action');
+  if (token == null) {
+    // return res.status(401).send('Not authorized to perform this action');
+    return next(
+      new CustomError('You are not authorized to perform this action', 401),
+    );
+  }
   // // user is the value we serialized, const user = {name:username}
   // jwt.verify(token, process.env.SECRET_KEY as string, err => {
   //   console.log(err);
@@ -51,6 +55,7 @@ export const authenticateToken = (
     return next();
   } catch (error) {
     // return res.status(401).send('unauthorized access');
+    console.log(error);
     next(new CustomError('token expired', 401));
   }
   // return next();

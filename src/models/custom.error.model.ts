@@ -12,13 +12,13 @@ export class BaseError extends Error {
   }
 }
 
-export class CustomError extends Error {
+export class CustomError extends BaseError {
   message!: string;
   status!: number;
   additionalInfo!: any;
 
   constructor(message: string, status: number = 500, additionalInfo: any = {}) {
-    super(message);
+    super(message, status);
     this.status = status;
     this.additionalInfo = additionalInfo;
   }

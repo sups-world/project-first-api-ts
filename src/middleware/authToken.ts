@@ -53,10 +53,17 @@ export const authenticateToken = (
     console.log(decodeToken);
 
     return next();
-  } catch (error) {
+  } catch (error: any) {
     // return res.status(401).send('unauthorized access');
-    console.log(error);
-    next(new CustomError('token expired', 401));
+    // console.log(error);
+    // next(new CustomError(error as string, 401));
+    // if(error.message === 'invalid token'){
+
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send('The token has expired');
+    } else {
+      return res.status(401).send(error.message);
+    }
   }
   // return next();
 };

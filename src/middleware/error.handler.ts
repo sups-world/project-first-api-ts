@@ -16,16 +16,16 @@ function handleError(
   res: express.Response,
   next: NextFunction,
 ) {
-  let customError = err;
+  let customEror = err;
 
   if (err instanceof CustomError) {
-    customError = new CustomError('we are having some troubles');
+    customEror = new CustomError('we are having some troubles');
 
     // we are not using the next function to prvent from triggering
     // the default error-handler. However, make sure you are sending a
     // response to client to prevent memory leaks in case you decide to
     // NOT use, like in this example, the NextFunction .i.e., next(new Error())
-    res.status((customError as CustomError).status).send(customError);
+    return res.status((customEror as CustomError).status).send(customEror);
   } else if (err instanceof BaseError) {
     return res.status(err.status).json({
       status: err.status < 500 && err.status >= 400 ? 'fail' : 'error',

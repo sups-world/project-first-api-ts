@@ -161,9 +161,13 @@ export const signup = async (
   //       // console.log(newUser, 'new user created successfully');
   //       // return res.status(201).json({ token: token });
 
-  const accessToken = jwt.sign(user, process.env.SECRET_KEY as string, {
-    expiresIn: '15s',
-  });
+  const accessToken = jwt.sign(
+    { email: user.email, pwd: user.password },
+    process.env.SECRET_KEY as string,
+    {
+      expiresIn: '15s',
+    },
+  );
 
   res.status(201).json({ accessToken: accessToken, user });
 };
@@ -179,14 +183,20 @@ export const login = async (
   const user = User.findFirst(a => a.email === email);
 
   if (!user) {
-    res.status(401).send('Invalid email or password');
+    return res.status(401).send('Invalid email or password');
   }
 
-  const isPwdValid = await bcrypt.compare(password, user!.password);
+  const isPwdValid = await bcrypt.compare(password, user.password);
 
   if (!isPwdValid) {
     res.status(401).send('Invalid email or password');
   }
 
-  const token = jwt.sign({ id: user!.id }, process.env.SECRET_KEY as string);
+  const token = jwt.sign(
+    { email: user.email, pwd: user.password },
+    process.env.SECRET_KEY as string,
+    {
+      expiresIn: '15s',
+    },
+  );
 };

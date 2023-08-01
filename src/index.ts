@@ -5,6 +5,7 @@ import express from 'express';
 
 import { routes } from './routes/index.routes';
 // import { errorHandler } from './middleware/errorHandler';
+import handleError from './middleware/error.handler';
 
 configDotenv();
 
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use('/', routes);
 
 // error handler at the end of use and routes
-// app.use(errorHandler);
+app.use(handleError);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

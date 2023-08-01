@@ -21,6 +21,8 @@
 
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { getSystemErrorName } from 'util';
+import { CustomError } from '../models/custom.error.model';
 
 export const authenticateToken = (
   req: express.Request,
@@ -30,12 +32,26 @@ export const authenticateToken = (
   //Bearer TOKEN
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
-  //user is the value we serialized, const user = {name:username}
-  jwt.verify(token, process.env.SECRET_KEY as string, err => {
-    console.log(err);
-    if (err) return res.sendStatus(403);
+  if (token == null)
+    return res.status(401).send('Not authorized to perform this action');
+  // // user is the value we serialized, const user = {name:username}
+  // jwt.verify(token, process.env.SECRET_KEY as string, err => {
+  //   console.log(err);
+  //   if (err) return res.sendStatus(401);
 
-    next(); //next function example:viewAllPosts in routes
-  });
+  //   next(); //next function example:viewAllPosts in routes
+  // });
+
+  try {
+    const decodeToken = jwt.verify(token, process.env.SECRET_KEY as string);
+    // let req.decodeToken= decodedToken;
+    // req.decodeToken = decodeToken ;
+    console.log(decodeToken);
+
+    return next();
+  } catch (error) {
+    // return res.status(401).send('unauthorized access');
+    next(new CustomError('token expired', 401));
+  }
+  // return next();
 };

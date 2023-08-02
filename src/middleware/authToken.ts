@@ -21,8 +21,8 @@
 
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { getSystemErrorName } from 'util';
-import { CustomError } from '../models/custom.error.model';
+// import { CustomError } from '../models/custom.error.model';
+import { User } from '../models/user.model';
 
 export const authenticateToken = (
   req: express.Request,
@@ -33,10 +33,10 @@ export const authenticateToken = (
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (token == null) {
-    // return res.status(401).send('Not authorized to perform this action');
-    return next(
-      new CustomError('You are not authorized to perform this action', 401),
-    );
+    return res.status(401).send('Not authorized to perform this action');
+    // return next(
+    //   new CustomError('You are not authorized to perform this action', 401),
+    // );
   }
   // // user is the value we serialized, const user = {name:username}
   // jwt.verify(token, process.env.SECRET_KEY as string, err => {
@@ -51,8 +51,20 @@ export const authenticateToken = (
     // let req.decodeToken= decodedToken;
     // req.decodeToken = decodeToken ;
     console.log(decodeToken);
+    console.log(typeof decodeToken);
+    const { id } = decodeToken as { id: number };
 
-    return next();
+    //decodeToken ko id lai check in db..then create req.currentUser and return it
+    const currentUser = User.findById(id);
+    // const currentUser = User.findById(parseInt())
+    // req.currentID = decodeToken;
+    req.crntUser = currentUser;
+    if (currentUser) {
+      // return { token, currentUser };
+      next();
+    } else {
+      return res.status(401).send('You are not authorized to do this');
+    }
   } catch (error: any) {
     // return res.status(401).send('unauthorized access');
     // console.log(error);

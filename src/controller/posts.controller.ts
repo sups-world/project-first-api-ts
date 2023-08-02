@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
 
 export const createPost = async (
@@ -12,9 +12,14 @@ export const createPost = async (
   };
   const createdDate = new Date();
   //after authentication change this
-  const creator = 1;
   //creator name how?
   //  const creator =
+
+  // console.log('::::authorization header', req.currentID);
+  //req.currentID from authToken lai creator ma assign garne..creator is creatorID
+
+  const creator = req.crntUser.id;
+
   const post = Post.add({ title, body, creator, createdDate });
   res.status(201).send(post);
 };

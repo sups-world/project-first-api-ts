@@ -4,7 +4,7 @@ import {
   validate,
 } from '../middleware/validators';
 
-import { authenticateToken as tokenAuth } from '../middleware/authToken';
+import { authenticateToken as verifyToken } from '../middleware/authToken';
 
 import { Router } from 'express';
 import {
@@ -18,15 +18,21 @@ import {
 
 export const postsRoute = Router();
 
-postsRoute.get('/', tokenAuth, viewAllPosts);
+postsRoute.get('/', viewAllPosts);
 
-postsRoute.get('/:id', viewSinglePost);
+postsRoute.get('/:id', verifyToken, viewSinglePost);
 
-postsRoute.post('/', [rules.id, rules.title, rules.body], validate, createPost);
+postsRoute.post(
+  '/',
+  verifyToken,
+  [rules.title, rules.body],
+  validate,
+  createPost,
+);
 
 // put or patch::patch for changing only partial...put for completely changing or creating new
-postsRoute.put('/:id', editPost);
+postsRoute.put('/:id', verifyToken, editPost);
 
-postsRoute.delete('/:id', deletePost);
+postsRoute.delete('/:id', verifyToken, deletePost);
 
 // postsRoute.get('/own', tokenAuth, ownPost);

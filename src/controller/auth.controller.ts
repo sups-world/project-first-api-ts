@@ -162,10 +162,11 @@ export const signup = async (
   //       // return res.status(201).json({ token: token });
 
   const accessToken = jwt.sign(
-    { email: user.email, pwd: user.password },
+    //jwt is for those data that can be public..example:id..but not passwords or emails
+    { id: user.id },
     process.env.SECRET_KEY as string,
     {
-      expiresIn: '15s',
+      expiresIn: '1d',
     },
   );
 
@@ -192,11 +193,7 @@ export const login = async (
     res.status(401).send('Invalid email or password');
   }
 
-  const token = jwt.sign(
-    { email: user.email, pwd: user.password },
-    process.env.SECRET_KEY as string,
-    {
-      expiresIn: '15s',
-    },
-  );
+  const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY as string, {
+    expiresIn: '1d',
+  });
 };

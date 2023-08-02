@@ -1,6 +1,16 @@
 import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
 
+//function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
+const authorizeUser = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
+  const { id: paramsID } = req.params as unknown as { id: number };
+};
+
 export const createPost = async (
   req: express.Request,
   res: express.Response,
@@ -56,11 +66,25 @@ export const editPost = async (
   const { id } = req.params;
   const { title, body } = req.body as { title: string; body: string };
 
-  const onePost = Post.edit(parseInt(id), { title, body });
-  if (onePost) {
-    res.send(onePost);
+  // const { creator: crID } = req.crntUser as { creator: number };
+
+  const temp = Post.viewOne(parseInt(id));
+  if (temp) {
+    //check if creator(id) of temp is same as the crntUser from req
+    const { id: cid } = req.crntUser;
+    if (cid === temp.creator) {
+      //flow to edit post
+      const onePost = Post.edit(parseInt(id), { title, body });
+      if (onePost) {
+        return res.send(onePost);
+      } else {
+        return res.status(404).send('no such record found');
+      }
+    } else {
+      return res.status(401).send("sorry! you cannot edit other's post");
+    }
   } else {
-    res.status(404).send('no such record found');
+    return res.status(404).send('no such record exists');
   }
 };
 

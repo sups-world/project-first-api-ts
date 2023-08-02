@@ -48,10 +48,8 @@ export const authenticateToken = (
 
   try {
     const decodeToken = jwt.verify(token, process.env.SECRET_KEY as string);
-    // let req.decodeToken= decodedToken;
-    // req.decodeToken = decodeToken ;
-    console.log(decodeToken);
-    console.log(typeof decodeToken);
+    // console.log(decodeToken);
+    // console.log(typeof decodeToken);
     const { id } = decodeToken as { id: number };
 
     //decodeToken ko id lai check in db..then create req.currentUser and return it

@@ -136,6 +136,7 @@ export const editUser = (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
+  // params ko id ra crntuser ko id match vaye matra edit garne authorized::done in authorize.ts
 
   const { name } = req.body as { name: string };
   const users = User.edit(parseInt(id), { name });

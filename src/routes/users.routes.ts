@@ -14,6 +14,8 @@ import {
 
 import { authenticateToken as authToken } from '../middleware/authToken';
 
+import { authorizeUser as allowUser } from '../middleware/authorize';
+
 export const usersRoute = Router();
 
 usersRoute.get('/', authToken, viewAllUsers);
@@ -21,7 +23,14 @@ usersRoute.get('/', authToken, viewAllUsers);
 usersRoute.get('/:id', viewSingleUser);
 
 //TODO::validate name from req.body
-usersRoute.patch('/:id', [rules.id, rules.name], validate, editUser);
+usersRoute.patch(
+  '/:id',
+  authToken,
+  [rules.id, rules.name],
+  validate,
+  allowUser,
+  editUser,
+);
 
 usersRoute.delete('/:id', authToken, deleteUser);
 

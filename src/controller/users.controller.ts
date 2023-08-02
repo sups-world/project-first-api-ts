@@ -2,6 +2,7 @@ import express, { NextFunction } from 'express';
 import { UserInfo } from '../interface/user.interface';
 import { User } from '../models/user.model';
 
+//function to check if the current logged in user is editing/deleting their own records only
 export const allowUser = async (req: express.Request, id: number) => {
   const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
   const { id: paramsID } = req.params as unknown as { id: number };

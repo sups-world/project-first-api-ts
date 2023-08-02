@@ -101,7 +101,7 @@ export const editPost = async (
       return res.status(404).send('no such record found');
     }
   } else {
-    return res.status(404).send('You can edit only your post');
+    return res.status(403).send('You can edit only your post');
   }
 };
 

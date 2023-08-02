@@ -7,7 +7,7 @@ export class Post {
   //add post
   static add(data: Omit<Iposts, 'postId'>): Iposts | null {
     let postId = 1;
-    let creator = 1;
+    // let creator = 1;
     if (posts.length) {
       postId = posts[posts.length - 1].postId + 1;
     }

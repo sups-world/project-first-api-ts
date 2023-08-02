@@ -11,12 +11,11 @@ export const createPost = async (
     body: string;
   };
   const createdDate = new Date();
-  //after authentication change this
-  //creator name how?
   //  const creator =
 
   // console.log('::::authorization header', req.currentID);
   //req.currentID from authToken lai creator ma assign garne..creator is creatorID
+  //using declaration merging I added req.crntUser which is an object that holds userInfo..which has id
 
   const creator = req.crntUser.id;
 

@@ -2,13 +2,18 @@ import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
-const authorizeUser = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
-  const { id: paramsID } = req.params as unknown as { id: number };
+//function receives req,id as parameter
+const authorizeUser = async (req: express.Request, id: string) => {
+  const temp = Post.viewOne(parseInt(id));
+  if (temp) {
+    const { id: cid } = req.crntUser;
+    // console.log('this is cid::', cid, 'this is creator::', temp.creator);
+    if (cid === temp.creator) {
+      return true;
+    }
+  } else {
+    return false;
+  }
 };
 
 export const createPost = async (
@@ -68,23 +73,35 @@ export const editPost = async (
 
   // const { creator: crID } = req.crntUser as { creator: number };
 
-  const temp = Post.viewOne(parseInt(id));
-  if (temp) {
-    //check if creator(id) of temp is same as the crntUser from req
-    const { id: cid } = req.crntUser;
-    if (cid === temp.creator) {
-      //flow to edit post
-      const onePost = Post.edit(parseInt(id), { title, body });
-      if (onePost) {
-        return res.send(onePost);
-      } else {
-        return res.status(404).send('no such record found');
-      }
+  // const temp = Post.viewOne(parseInt(id));
+  // if (temp) {
+  //   //check if creator(id) of temp is same as the crntUser from req
+  //   const { id: cid } = req.crntUser;
+  //   if (cid === temp.creator) {
+  //     //flow to edit post
+  //     const onePost = Post.edit(parseInt(id), { title, body });
+  //     if (onePost) {
+  //       return res.send(onePost);
+  //     } else {
+  //       return res.status(404).send('no such record found');
+  //     }
+  //   } else {
+  //     return res.status(401).send("sorry! you cannot edit other's post");
+  //   }
+  // } else {
+  //   return res.status(404).send('no such record exists');
+  // }
+
+  const flag = await authorizeUser(req, id);
+  if (flag) {
+    const onePost = Post.edit(parseInt(id), { title, body });
+    if (onePost) {
+      return res.send(onePost);
     } else {
-      return res.status(401).send("sorry! you cannot edit other's post");
+      return res.status(404).send('no such record found');
     }
   } else {
-    return res.status(404).send('no such record exists');
+    return res.status(404).send('You can edit only your post');
   }
 };
 
@@ -95,11 +112,19 @@ export const deletePost = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const onePost = Post.delete(parseInt(id));
-  if (onePost) {
-    res.send(onePost);
+
+  //using function to make sure user can only delete own post, not others
+
+  const flag = await authorizeUser(req, id);
+  if (flag) {
+    const onePost = Post.delete(parseInt(id));
+    if (onePost) {
+      return res.send(onePost);
+    } else {
+      return res.status(404).send('no record found');
+    }
   } else {
-    res.status(404).send('no record found');
+    return res.status(401).send('you can delete only your posts');
   }
 };
 

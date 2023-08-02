@@ -6,8 +6,9 @@ export const authorizeUser = async (
 ) => {
   const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
   const { id: paramsID } = req.params as unknown as { id: number };
-  //   console.log('this is params id', paramsID, 'this is current id', cid);
-  if (cid === paramsID) {
+  console.log('this is params id', paramsID, 'this is current id', cid);
+  console.log('this is the value:::', cid === paramsID);
+  if (cid == paramsID) {
     return next();
   } else {
     return res.status(401).send('You are not authorized');

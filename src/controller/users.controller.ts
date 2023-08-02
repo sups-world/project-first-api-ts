@@ -2,6 +2,16 @@ import express, { NextFunction } from 'express';
 import { UserInfo } from '../interface/user.interface';
 import { User } from '../models/user.model';
 
+export const allowUser = async (req: express.Request, id: number) => {
+  const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
+  const { id: paramsID } = req.params as unknown as { id: number };
+  if (cid == paramsID) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // // interface
 // interface userInfo {
 //   id: number;
@@ -143,12 +153,21 @@ export const editUser = (
   res.status(200).send(users);
 };
 
-export const deleteUser = (
+export const deleteUser = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const user = User.delete(parseInt(id));
-  res.status(200).send(user);
+
+  const flag = await allowUser(req, parseInt(id));
+  if (flag) {
+    const user = User.delete(parseInt(id));
+    if (!user) {
+      return res.status(404).send('no such user found');
+    }
+    return res.status(200).send(user);
+  } else {
+    return res.status(401).send('you can edit/delete your own account only');
+  }
 };

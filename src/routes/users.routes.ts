@@ -23,7 +23,7 @@ usersRoute.get('/:id', viewSingleUser);
 //TODO::validate name from req.body
 usersRoute.patch('/:id', [rules.id, rules.name], validate, editUser);
 
-usersRoute.delete('/:id', deleteUser);
+usersRoute.delete('/:id', authToken, deleteUser);
 
 // code to debug
 // (_, __, next) => {

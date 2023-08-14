@@ -19,7 +19,7 @@ import { authorizeUser as allowUser } from '../middleware/authorize';
 export const usersRoute = Router();
 
 // usersRoute.get('/', authToken, viewAllUsers);
-usersRoute.get('/', viewAllUsers);
+usersRoute.get('/', authToken, allowUser, viewAllUsers);
 
 // usersRoute.get('/:id', viewSingleUser);
 usersRoute.get('/:id', viewSingleUser);
@@ -33,10 +33,17 @@ usersRoute.get('/:id', viewSingleUser);
 //   allowUser,
 //   editUser,
 // );
-usersRoute.patch('/:id', editUser);
+usersRoute.patch(
+  '/:id',
+  authToken,
+  [rules.id, rules.name],
+  validate,
+  allowUser,
+  editUser,
+);
 
 // usersRoute.delete('/:id', authToken, deleteUser);
-usersRoute.delete('/:id', deleteUser);
+usersRoute.delete('/:id', authToken, allowUser, deleteUser);
 
 // code to debug
 // (_, __, next) => {

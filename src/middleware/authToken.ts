@@ -23,6 +23,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 // import { CustomError } from '../models/custom.error.model';
 import { User } from '../models/user.model';
+import { showSingleUser } from '../services/users.services';
 
 export const authenticateToken = (
   req: express.Request,
@@ -50,14 +51,14 @@ export const authenticateToken = (
     const decodeToken = jwt.verify(token, process.env.SECRET_KEY as string);
     // console.log(decodeToken);
     // console.log(typeof decodeToken);
-    const { id } = decodeToken as { id: number };
+    const { id } = decodeToken as { id: string };
 
     //decodeToken ko id lai check in db..then create req.currentUser and return it
-    const currentUser = User.findById(id);
+    const currentUser = showSingleUser(id);
     // const currentUser = User.findById(parseInt())
     // req.currentID = decodeToken;
     req.crntUser = currentUser;
-    if (currentUser) {
+    if (currentUser !== null) {
       // return { token, currentUser };
       next();
     } else {

@@ -1,6 +1,5 @@
 import prisma from '../database/index.database';
-import type { User } from '../../node_modules/.prisma/client';
-import express from 'express';
+// import type { User } from '../../node_modules/.prisma/client';
 
 //show all users
 export const showAllUsers = async () => {
@@ -35,6 +34,19 @@ export const showSingleUser = async (idd: string) => {
       // },
     });
     return oneUser;
+  } catch (error) {
+    console.log(error);
+  }
+};
+// find user by email
+export const showByEmail = async (email1: string) => {
+  try {
+    const found = await prisma.user.findUnique({
+      where: {
+        email: email1,
+      },
+    });
+    return found;
   } catch (error) {
     console.log(error);
   }

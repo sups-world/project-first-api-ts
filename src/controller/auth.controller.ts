@@ -2,6 +2,8 @@ import express from 'express';
 import bcrypt, { hash, compareSync } from 'bcrypt';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user.model';
+import { userSignUp } from '../services/auth.services';
+import { showByEmail } from '../services/users.services';
 // import { UserInfo } from '../interface/user.interface';
 
 // interface
@@ -139,13 +141,15 @@ export const signup = async (
 ) => {
   const { email, password, name } = req.body;
 
-  const existingUser = User.findFirst(a => a.email === email);
+  // const existingUser = User.findFirst(a => a.email === email);
+  const existingUser = await showByEmail(email);
   if (existingUser) {
     return res.status(400).send('email already used');
   }
 
   const hashedPwd = await bcrypt.hash(password, 10);
-  const user = User.add({ email, name, password: hashedPwd });
+  // const user = User.add({ email, name, password: hashedPwd });
+  const user = await userSignUp(email, password, name);
 
   //  // creating a new token
   //       //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
@@ -170,7 +174,7 @@ export const signup = async (
     },
   );
 
-  res.status(201).json({ accessToken: accessToken, user });
+  return res.status(201).json({ accessToken: accessToken, user });
 };
 
 //sign in module

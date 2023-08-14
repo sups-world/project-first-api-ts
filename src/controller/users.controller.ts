@@ -1,8 +1,8 @@
 import express, { NextFunction } from 'express';
 import { Prisma } from '@prisma/client';
 
-import { UserInfo } from '../interface/user.interface';
-import { User } from '../models/user.model';
+// import { UserInfo } from '../interface/user.interface';
+// import { User } from '../models/user.model';
 import {
   delUser,
   edtUser,

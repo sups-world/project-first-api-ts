@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { UserInfo } from '../interface/user.interface';
 import { User } from '../models/user.model';
 import {
+  delUser,
   edtUser,
   showAllUsers,
   showSingleUser,
@@ -187,16 +188,33 @@ export const deleteUser = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id } = req.params;
+  // const flag = await allowUser(req, parseInt(id));
+  // if (flag) {
+  //   const user = User.delete(parseInt(id));
+  //   if (!user) {
+  //     return res.status(404).send('no such user found');
+  //   }
+  //   return res.status(200).send(user);
+  // } else {
+  //   return res.status(401).send('you can edit/delete your own account only');
+  // }
 
-  const flag = await allowUser(req, parseInt(id));
-  if (flag) {
-    const user = User.delete(parseInt(id));
-    if (!user) {
-      return res.status(404).send('no such user found');
+  try {
+    const { id } = req.params;
+    const user = await delUser(id);
+    if (user === null) {
+      return res.status(404).send('no such data exists');
+    } else {
+      return res.send(user);
     }
-    return res.status(200).send(user);
-  } else {
-    return res.status(401).send('you can edit/delete your own account only');
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // console.log(error.code, error.message);
+      if (error.code === 'P2025') {
+        error.message = 'The record you are looking for does not exist';
+      }
+      return res.status(404).send(error.message);
+    }
   }
 };

@@ -35,7 +35,8 @@ usersRoute.get('/:id', viewSingleUser);
 // );
 usersRoute.patch('/:id', editUser);
 
-usersRoute.delete('/:id', authToken, deleteUser);
+// usersRoute.delete('/:id', authToken, deleteUser);
+usersRoute.delete('/:id', deleteUser);
 
 // code to debug
 // (_, __, next) => {

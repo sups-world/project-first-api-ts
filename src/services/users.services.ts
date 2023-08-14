@@ -67,3 +67,18 @@ export const edtUser = async (idd: string, namee: string) => {
     throw error;
   }
 };
+
+// deleting user
+export const delUser = async (idd: string) => {
+  try {
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: idd,
+      },
+    });
+
+    return deletedUser;
+  } catch (error) {
+    throw error;
+  }
+};

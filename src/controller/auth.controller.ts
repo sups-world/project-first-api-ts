@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt, { hash, compareSync } from 'bcrypt';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user.model';
-import { userSignUp } from '../services/auth.services';
+import { userSignUp } from '../services/users.services';
 import { showByEmail } from '../services/users.services';
 // import { UserInfo } from '../interface/user.interface';
 
@@ -149,7 +149,7 @@ export const signup = async (
 
   const hashedPwd = await bcrypt.hash(password, 10);
   // const user = User.add({ email, name, password: hashedPwd });
-  const user = await userSignUp(email, password, name);
+  const user = await userSignUp(email, hashedPwd, name);
 
   //  // creating a new token
   //       //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
@@ -185,19 +185,30 @@ export const login = async (
 ) => {
   const { email, password } = req.body;
 
-  const user = User.findFirst(a => a.email === email);
+  // const user = User.findFirst(a => a.email === email);
+  const existingUser = await showByEmail(email);
 
-  if (!user) {
+  // if (typeof existingUser === 'undefined') {
+  //   return res.status(401).send('Invalid email or password');
+  // }
+
+  if (existingUser === null || typeof existingUser === 'undefined') {
     return res.status(401).send('Invalid email or password');
   }
 
-  const isPwdValid = await bcrypt.compare(password, user.password);
+  // const isPwdValid = await bcrypt.compare(password, user.password);
+  const isPwdValid = await bcrypt.compare(password, existingUser.password);
 
   if (!isPwdValid) {
-    res.status(401).send('Invalid email or password');
+    return res.status(401).send('Invalid email or password');
   }
 
-  const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY as string, {
-    expiresIn: '1d',
-  });
+  const token = jwt.sign(
+    { id: existingUser.id },
+    process.env.SECRET_KEY as string,
+    {
+      expiresIn: '1d',
+    },
+  );
+  return res.status(201).json({ accessToken: token, existingUser });
 };

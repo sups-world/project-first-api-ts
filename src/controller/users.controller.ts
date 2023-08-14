@@ -1,7 +1,13 @@
 import express, { NextFunction } from 'express';
+import { Prisma } from '@prisma/client';
+
 import { UserInfo } from '../interface/user.interface';
 import { User } from '../models/user.model';
-import { showAllUsers, showSingleUser } from '../services/users.services';
+import {
+  edtUser,
+  showAllUsers,
+  showSingleUser,
+} from '../services/users.services';
 
 //function to check if the current logged in user is editing/deleting their own records only
 export const allowUser = async (req: express.Request, id: number) => {
@@ -136,6 +142,7 @@ export const viewSingleUser = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
+  const { name1 } = req.body as { name1: string };
   // const users = User.findById(+id); //can use Number() typecasting as well
   const users = await showSingleUser(id);
 
@@ -146,17 +153,33 @@ export const viewSingleUser = async (
   }
 };
 
-export const editUser = (
+// editing username
+export const editUser = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id } = req.params;
-  // params ko id ra crntuser ko id match vaye matra edit garne authorized::done in authorize.ts
+  try {
+    const { id } = req.params;
+    // params ko id ra crntuser ko id match vaye matra edit garne authorized::done in authorize.ts
 
-  const { name } = req.body as { name: string };
-  const users = User.edit(parseInt(id), { name });
-  res.status(200).send(users);
+    const { name } = req.body as { name: string };
+    // const users = User.edit(parseInt(id), { name });
+    const users = await edtUser(id, name);
+    if (users === null) {
+      return res.status(401).send('you are not authorized');
+    } else {
+      return res.status(200).send(users);
+    }
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // console.log(error.code, error.message);
+      if (error.code === 'P2025') {
+        error.message = 'The record you are looking for does not exist';
+      }
+      res.status(404).send(error.message);
+    }
+  }
 };
 
 export const deleteUser = async (

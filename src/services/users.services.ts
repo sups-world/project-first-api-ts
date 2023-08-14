@@ -41,26 +41,29 @@ export const showSingleUser = async (idd: string) => {
 };
 
 // editing user
-export const edtUser = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
+export const edtUser = async (idd: string, namee: string) => {
   try {
-    const { id1 } = req.params;
-    const { name1 } = req.body as { name1: string };
+    // const { name1 } = req.body as { name1: string };
 
     const updatedUser = await prisma.user.update({
       where: {
-        id: id1,
+        id: idd,
       },
       data: {
-        name: name1,
+        name: namee,
       },
     });
-    return res.status(200).send(updatedUser);
+    return updatedUser;
   } catch (error) {
-    console.log(error);
-    return res.end();
+    // console.log(error);
+    // if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //   // The .code property can be accessed in a type-safe manner
+    //   if (error.code === 'P2025') {
+    //     console.log(
+    //       'There is a unique constraint violation, a new user cannot be created with this email',
+    //     );
+    //   }
+    // }
+    throw error;
   }
 };

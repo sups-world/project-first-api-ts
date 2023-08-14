@@ -18,19 +18,22 @@ import { authorizeUser as allowUser } from '../middleware/authorize';
 
 export const usersRoute = Router();
 
-usersRoute.get('/', authToken, viewAllUsers);
+// usersRoute.get('/', authToken, viewAllUsers);
+usersRoute.get('/', viewAllUsers);
 
+// usersRoute.get('/:id', viewSingleUser);
 usersRoute.get('/:id', viewSingleUser);
 
 //TODO::validate name from req.body
-usersRoute.patch(
-  '/:id',
-  authToken,
-  [rules.id, rules.name],
-  validate,
-  allowUser,
-  editUser,
-);
+// usersRoute.patch(
+//   '/:id',
+//   authToken,
+//   [rules.id, rules.name],
+//   validate,
+//   allowUser,
+//   editUser,
+// );
+usersRoute.patch('/:id', editUser);
 
 usersRoute.delete('/:id', authToken, deleteUser);
 

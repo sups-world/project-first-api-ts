@@ -1,6 +1,7 @@
 import express, { NextFunction } from 'express';
 import { UserInfo } from '../interface/user.interface';
 import { User } from '../models/user.model';
+import { showAllUsers, showSingleUser } from '../services/users.services';
 
 //function to check if the current logged in user is editing/deleting their own records only
 export const allowUser = async (req: express.Request, id: number) => {
@@ -117,27 +118,31 @@ export const allowUser = async (req: express.Request, id: number) => {
 // };
 
 //viewAllUsers
-export const viewAllUsers = (
+export const viewAllUsers = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const users = User.findAll();
+  // const users = User.findAll();
+  const users = await showAllUsers();
+  if (users === null) return res.send('no data found');
   res.status(200).send(users);
 };
 
 //view by id in params
-export const viewSingleUser = (
+export const viewSingleUser = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const users = User.findById(+id); //can use Number() typecasting as well
-  if (users) {
-    res.status(200).send(users);
-  } else {
+  // const users = User.findById(+id); //can use Number() typecasting as well
+  const users = await showSingleUser(id);
+
+  if (users === null) {
     res.status(404).send('no such record found');
+  } else {
+    res.status(200).send(users);
   }
 };
 

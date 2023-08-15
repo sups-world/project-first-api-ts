@@ -11,9 +11,14 @@ export const getAllPosts = async () => {
 };
 
 // getSinglePost
-export const getSinglePost = (a: string) => {
-  console.log('getSinglePost');
-  return;
+export const getSinglePost = async (id: string) => {
+  const sPost = await prisma.post.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  return sPost;
 };
 
 // updatePost

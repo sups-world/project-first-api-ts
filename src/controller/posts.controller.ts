@@ -64,12 +64,12 @@ export const viewSinglePost = async (
 ) => {
   const { id } = req.params;
   // const onePost = Post.viewOne(parseInt(id));
-  const onePost = getSinglePost(id);
-  // if (onePost) {
-  //   res.send(onePost);
-  // } else {
-  //   res.status(404).send('no records found');
-  // }
+  const onePost = await getSinglePost(id);
+  if (onePost !== null) {
+    res.send(onePost);
+  } else {
+    res.status(404).send('no records found');
+  }
 };
 
 //edit post title and body

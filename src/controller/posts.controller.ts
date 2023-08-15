@@ -1,6 +1,10 @@
 import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
-import { getAllPosts } from '../services/posts.services';
+import {
+  getAllPosts,
+  getSinglePost,
+  updatePost,
+} from '../services/posts.services';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
 //function receives req,id as parameter
@@ -46,7 +50,7 @@ export const viewAllPosts = async (
   next: express.NextFunction,
 ) => {
   // const allPosts = Post.view();
-  const allPosts = getAllPosts;
+  const allPosts = getAllPosts();
   res.send(allPosts);
 };
 //view post by id
@@ -56,12 +60,13 @@ export const viewSinglePost = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const onePost = Post.viewOne(parseInt(id));
-  if (onePost) {
-    res.send(onePost);
-  } else {
-    res.status(404).send('no records found');
-  }
+  // const onePost = Post.viewOne(parseInt(id));
+  const onePost = getSinglePost(id);
+  // if (onePost) {
+  //   res.send(onePost);
+  // } else {
+  //   res.status(404).send('no records found');
+  // }
 };
 
 //edit post title and body
@@ -96,14 +101,15 @@ export const editPost = async (
 
   const flag = await authorizeUser(req, id);
   if (flag) {
-    const onePost = Post.edit(parseInt(id), { title, body });
-    if (onePost) {
-      return res.send(onePost);
-    } else {
-      return res.status(404).send('no such record found');
-    }
-  } else {
-    return res.status(403).send('You can edit only your post');
+    // const onePost = Post.edit(parseInt(id), { title, body });
+    const onePost = updatePost(title, body);
+    //   if (onePost) {
+    //     return res.send(onePost);
+    //   } else {
+    //     return res.status(404).send('no such record found');
+    //   }
+    // } else {
+    //   return res.status(403).send('You can edit only your post');
   }
 };
 

@@ -19,7 +19,7 @@ import { authorizeUser as allowUser } from '../middleware/authorize';
 export const usersRoute = Router();
 
 // usersRoute.get('/', authToken, viewAllUsers);
-usersRoute.get('/', authToken, allowUser, viewAllUsers);
+usersRoute.get('/', authToken, viewAllUsers);
 
 // usersRoute.get('/:id', viewSingleUser);
 usersRoute.get('/:id', viewSingleUser);

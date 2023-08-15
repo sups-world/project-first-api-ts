@@ -31,19 +31,20 @@ export const createPost = async (
     title: string;
     body: string;
   };
-  const createdDate = new Date();
+  // const createdDate = new Date();
   //  const creator =
 
   // console.log('::::authorization header', req.currentID);
   //req.currentID from authToken lai creator ma assign garne..creator is creatorID
   //using declaration merging I added req.crntUser which is an object that holds userInfo..which has id
 
-  const creator = req.crntUser.id;
+  // const creator = req.crntUser.id;
 
   // const post = Post.add({ title, body, creator, createdDate });
-  const post = createNewPost(title, body);
+  const { id } = req.crntUser;
+  const post = createNewPost(id, title, body);
 
-  res.status(201).send(post);
+  return res.status(201).send(post);
 };
 
 //viewAllPosts

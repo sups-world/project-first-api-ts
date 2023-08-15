@@ -6,19 +6,31 @@ import {
   getSinglePost,
   updatePost,
 } from '../services/posts.services';
+import { allowUser } from './users.controller';
+import { Prisma } from '@prisma/client';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
 //function receives req,id as parameter
-const authorizeUser = async (req: express.Request, id: string) => {
-  const temp = Post.viewOne(parseInt(id));
-  if (temp) {
-    const { id: cid } = req.crntUser;
-    // console.log('this is cid::', cid, 'this is creator::', temp.creator);
-    if (cid === temp.creator) {
-      return true;
-    }
-  } else {
-    return false;
+// const authorizeUser = async (req: express.Request, id: string) => {
+//   const temp = Post.viewOne(parseInt(id));
+//   if (temp) {
+//     const { id: cid } = req.crntUser;
+//     // console.log('this is cid::', cid, 'this is creator::', temp.creator);
+//     if (cid === temp.creator) {
+//       return true;
+//     }
+//   } else {
+//     return false;
+//   }
+// };
+
+const userAllowed = async (req: express.Request, id: string) => {
+  try {
+    const oldPost = await getSinglePost(id);
+    if (oldPost === null) return null;
+    if (req.crntUser.id === oldPost.authorId) return true;
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -42,7 +54,7 @@ export const createPost = async (
 
   // const post = Post.add({ title, body, creator, createdDate });
   const { id } = req.crntUser;
-  const post = createNewPost(id, title, body);
+  const post = await createNewPost(id, title, body);
 
   return res.status(201).send(post);
 };
@@ -79,41 +91,49 @@ export const editPost = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id } = req.params;
-  const { title, body } = req.body as { title: string; body: string };
+  try {
+    const { id } = req.params;
+    const { title, body } = req.body as { title: string; body: string };
 
-  // const { creator: crID } = req.crntUser as { creator: number };
+    // const { creator: crID } = req.crntUser as { creator: number };
 
-  // const temp = Post.viewOne(parseInt(id));
-  // if (temp) {
-  //   //check if creator(id) of temp is same as the crntUser from req
-  //   const { id: cid } = req.crntUser;
-  //   if (cid === temp.creator) {
-  //     //flow to edit post
-  //     const onePost = Post.edit(parseInt(id), { title, body });
-  //     if (onePost) {
-  //       return res.send(onePost);
-  //     } else {
-  //       return res.status(404).send('no such record found');
-  //     }
-  //   } else {
-  //     return res.status(401).send("sorry! you cannot edit other's post");
-  //   }
-  // } else {
-  //   return res.status(404).send('no such record exists');
-  // }
-
-  const flag = await authorizeUser(req, id);
-  if (flag) {
-    // const onePost = Post.edit(parseInt(id), { title, body });
-    const onePost = updatePost(title, body);
-    //   if (onePost) {
-    //     return res.send(onePost);
+    // const temp = Post.viewOne(parseInt(id));
+    // if (temp) {
+    //   //check if creator(id) of temp is same as the crntUser from req
+    //   const { id: cid } = req.crntUser;
+    //   if (cid === temp.creator) {
+    //     //flow to edit post
+    //     const onePost = Post.edit(parseInt(id), { title, body });
+    //     if (onePost) {
+    //       return res.send(onePost);
+    //     } else {
+    //       return res.status(404).send('no such record found');
+    //     }
     //   } else {
-    //     return res.status(404).send('no such record found');
+    //     return res.status(401).send("sorry! you cannot edit other's post");
     //   }
     // } else {
-    //   return res.status(403).send('You can edit only your post');
+    //   return res.status(404).send('no such record exists');
+    // }
+
+    const flag = await userAllowed(req, id);
+    if (flag !== null || typeof flag !== 'undefined') {
+      // const onePost = Post.edit(parseInt(id), { title, body });
+      const onePost = await updatePost(id, title, body);
+      if (onePost) {
+        return res.send(onePost);
+      } else {
+        return res.status(404).send('no such record found');
+      }
+    } else {
+      return res.status(403).send('You can edit only your post');
+    }
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(error.code, error.message);
+      //code:'P2025', 'record to update not found'
+      return res.status(404).send(`The post you are looking for doesn't exist`);
+    }
   }
 };
 
@@ -127,7 +147,7 @@ export const deletePost = async (
 
   //using function to make sure user can only delete own post, not others
 
-  const flag = await authorizeUser(req, id);
+  const flag = await allowUser(req, id);
   if (flag) {
     const onePost = Post.delete(parseInt(id));
     if (onePost) {

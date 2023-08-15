@@ -42,8 +42,22 @@ export const getSinglePost = async (id: string) => {
 };
 
 // updatePost
-export const updatePost = (title?: string, body?: string) => {
-  console.log('updatePost');
+export const updatePost = async (id: string, title?: string, body?: string) => {
+  try {
+    const updatedPost = await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: {
+        title,
+        body,
+      },
+    });
+    return updatedPost;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 // deletePost

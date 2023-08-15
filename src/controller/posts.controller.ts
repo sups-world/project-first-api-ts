@@ -1,6 +1,7 @@
 import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
 import {
+  createNewPost,
   getAllPosts,
   getSinglePost,
   updatePost,
@@ -39,7 +40,9 @@ export const createPost = async (
 
   const creator = req.crntUser.id;
 
-  const post = Post.add({ title, body, creator, createdDate });
+  // const post = Post.add({ title, body, creator, createdDate });
+  const post = createNewPost(title, body);
+
   res.status(201).send(post);
 };
 

@@ -9,11 +9,15 @@ import {
   getAllUsers,
   getSingleUser,
 } from '../services/users.services';
+import { getSinglePost } from '../services/posts.services';
 
 //function to check if the current logged in user is editing/deleting their own records only
+// to check req.crntuserid matches the id in params
 export const allowUser = async (req: express.Request, id: string) => {
   const { id: cid } = req.crntUser as { id: string }; //req.crntUser is an object only after compilation therefore we extract like this
   const { id: paramsID } = req.params as unknown as { id: string };
+  // const post = await getSinglePost(id);
+  // if (post === null || typeof post === 'undefined') return false;
   if (cid == paramsID) {
     return true;
   } else {

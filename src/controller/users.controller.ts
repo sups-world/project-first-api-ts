@@ -6,14 +6,14 @@ import { Prisma } from '@prisma/client';
 import {
   delUser,
   edtUser,
-  showAllUsers,
-  showSingleUser,
+  getAllUsers,
+  getSingleUser,
 } from '../services/users.services';
 
 //function to check if the current logged in user is editing/deleting their own records only
-export const allowUser = async (req: express.Request, id: number) => {
-  const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
-  const { id: paramsID } = req.params as unknown as { id: number };
+export const allowUser = async (req: express.Request, id: string) => {
+  const { id: cid } = req.crntUser as { id: string }; //req.crntUser is an object only after compilation therefore we extract like this
+  const { id: paramsID } = req.params as unknown as { id: string };
   if (cid == paramsID) {
     return true;
   } else {
@@ -131,7 +131,7 @@ export const viewAllUsers = async (
   next: express.NextFunction,
 ) => {
   // const users = User.findAll();
-  const users = await showAllUsers();
+  const users = await getAllUsers();
   if (users === null) return res.send('no data found');
   res.status(200).send(users);
 };
@@ -143,9 +143,9 @@ export const viewSingleUser = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const { name1 } = req.body as { name1: string };
+  // const { name1 } = req.body as { name1: string };
   // const users = User.findById(+id); //can use Number() typecasting as well
-  const users = await showSingleUser(id);
+  const users = await getSingleUser(id);
 
   if (users === null) {
     res.status(404).send('no such record found');

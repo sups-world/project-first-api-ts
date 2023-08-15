@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt, { hash, compareSync } from 'bcrypt';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user.model';
-import { userSignUp } from '../services/users.services';
+import { userCreate } from '../services/users.services';
 import { showByEmail } from '../services/users.services';
 // import { UserInfo } from '../interface/user.interface';
 
@@ -149,7 +149,7 @@ export const signup = async (
 
   const hashedPwd = await bcrypt.hash(password, 10);
   // const user = User.add({ email, name, password: hashedPwd });
-  const user = await userSignUp(email, hashedPwd, name);
+  const user = await userCreate(email, hashedPwd, name);
 
   //  // creating a new token
   //       //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {

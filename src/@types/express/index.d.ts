@@ -1,4 +1,4 @@
-// import { UserInfo } from '../../interface/user.interface';
+import { UserInfo } from '../../interface/user.interface';
 
 // declare global {
 //   namespace Express {
@@ -9,12 +9,14 @@
 // }
 
 import express from 'express';
+import { IUser } from '../../interface/user.interface';
 
 declare global {
   namespace Express {
     interface Request {
       //   currentID: string | any;
-      crntUser: UserInfo;
+      crntUser: IUser;
+      crntUserId: string;
     }
   }
 }

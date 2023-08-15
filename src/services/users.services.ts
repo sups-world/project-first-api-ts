@@ -2,7 +2,7 @@ import prisma from '../database/index.database';
 // import type { User } from '../../node_modules/.prisma/client';
 
 //creating users/signup
-export const userSignUp = async (
+export const userCreate = async (
   email1: string,
   password1: string,
   name1: string,
@@ -17,13 +17,14 @@ export const userSignUp = async (
     });
     return newUser;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };
 //show all users
-export const showAllUsers = async () => {
+export const getAllUsers = async () => {
   try {
+    // TODO::::.findMany doesn't get errors so no need of try-catch
     const allUsers = await prisma.user.findMany({
       // select: {
       //   email: true,
@@ -40,11 +41,11 @@ export const showAllUsers = async () => {
 };
 
 //show single user by id
-export const showSingleUser = async (idd: string) => {
+export const getSingleUser = async (id: string) => {
   try {
     const oneUser = await prisma.user.findUnique({
       where: {
-        id: idd,
+        id,
       },
       // select: {
       //   email: true,
@@ -59,11 +60,12 @@ export const showSingleUser = async (idd: string) => {
   }
 };
 // find user by email
-export const showByEmail = async (email1: string) => {
+export const showByEmail = async (email: string) => {
   try {
     const found = await prisma.user.findUnique({
       where: {
-        email: email1,
+        // email: email,
+        email,
       },
     });
     return found;
@@ -101,16 +103,9 @@ export const edtUser = async (idd: string, namee: string) => {
 };
 
 // deleting user
-export const delUser = async (idd: string) => {
-  try {
-    const deletedUser = await prisma.user.delete({
-      where: {
-        id: idd,
-      },
-    });
-
-    return deletedUser;
-  } catch (error) {
-    throw error;
-  }
-};
+export const delUser = (idd: string) =>
+  prisma.user.delete({
+    where: {
+      id: idd,
+    },
+  });

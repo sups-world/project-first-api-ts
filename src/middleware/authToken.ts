@@ -23,8 +23,9 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 // import { CustomError } from '../models/custom.error.model';
 import { User } from '../models/user.model';
+import { getSingleUser } from '../services/users.services';
 
-export const authenticateToken = (
+export const authenticateToken = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
@@ -50,18 +51,20 @@ export const authenticateToken = (
     const decodeToken = jwt.verify(token, process.env.SECRET_KEY as string);
     // console.log(decodeToken);
     // console.log(typeof decodeToken);
-    const { id } = decodeToken as { id: number };
+    const { id } = decodeToken as { id: string };
 
     //decodeToken ko id lai check in db..then create req.currentUser and return it
-    const currentUser = User.findById(id);
+    const currentUser = await getSingleUser(id);
     // const currentUser = User.findById(parseInt())
     // req.currentID = decodeToken;
-    req.crntUser = currentUser;
-    if (currentUser) {
+    if (currentUser === null || typeof currentUser === 'undefined') {
       // return { token, currentUser };
-      next();
-    } else {
       return res.status(401).send('You are not authorized to do this');
+    } else {
+      req.crntUser = currentUser;
+      next();
+
+      // return res.status(401).send('You are not authorized to do this');
     }
   } catch (error: any) {
     // return res.status(401).send('unauthorized access');

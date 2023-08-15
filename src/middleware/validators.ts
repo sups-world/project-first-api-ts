@@ -19,7 +19,7 @@ export const userValidationRules = {
     .withMessage(
       'password must be 5 characters or more..must not be more than 12 characters',
     ),
-  id: param('id').isNumeric().toInt().withMessage(' should be number'),
+  id: param('id').isString().withMessage('id should be cuid'),
 };
 
 export const postValidationRules = {

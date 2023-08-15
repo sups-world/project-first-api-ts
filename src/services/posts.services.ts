@@ -5,9 +5,9 @@ export const createNewPost = (title: string, body: string) => {
   console.log('createPost');
 };
 // getAllPosts
-export const getAllPosts = () => {
-  console.log('getAllPosts');
-  return;
+export const getAllPosts = async () => {
+  const posts = await prisma.post.findMany();
+  return posts;
 };
 
 // getSinglePost

@@ -53,8 +53,8 @@ export const viewAllPosts = async (
   next: express.NextFunction,
 ) => {
   // const allPosts = Post.view();
-  const allPosts = getAllPosts();
-  res.send(allPosts);
+  const allPosts = await getAllPosts();
+  return res.send(allPosts);
 };
 //view post by id
 export const viewSinglePost = async (

@@ -2,6 +2,7 @@ import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
 import {
   createNewPost,
+  delPost,
   getAllPosts,
   getSinglePost,
   updatePost,
@@ -25,6 +26,7 @@ import { Prisma } from '@prisma/client';
 // };
 
 const userAllowed = async (req: express.Request, id: string) => {
+  //this is to see if the authorid and req.crntuser.id matches
   try {
     const oldPost = await getSinglePost(id);
     if (oldPost === null) return null;
@@ -115,7 +117,8 @@ export const editPost = async (
     // } else {
     //   return res.status(404).send('no such record exists');
     // }
-
+    // const check = await allowUser(req, id);
+    // if (!check) return res.status(401).send('your access is invalid');
     const flag = await userAllowed(req, id);
     if (flag !== null || typeof flag !== 'undefined') {
       // const onePost = Post.edit(parseInt(id), { title, body });
@@ -143,21 +146,29 @@ export const deletePost = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    // now to see if req.params.id matches post.authorid
+    const flag = await userAllowed(req, id);
+    if (flag) {
+      const onePost = await delPost(id);
+      if (onePost !== null) {
+        return res.send(onePost);
+      } else {
+        return res.status(404).send('no record found');
+      }
+    } else {
+      return res.status(401).send('you can delete only your posts');
+    }
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(error.code, error.message);
+      //code:'P2025', 'record to update not found'
+      return res.status(404).send(`The post you are looking for doesn't exist`);
+    }
+  }
 
   //using function to make sure user can only delete own post, not others
-
-  const flag = await allowUser(req, id);
-  if (flag) {
-    const onePost = Post.delete(parseInt(id));
-    if (onePost) {
-      return res.send(onePost);
-    } else {
-      return res.status(404).send('no record found');
-    }
-  } else {
-    return res.status(401).send('you can delete only your posts');
-  }
 };
 
 // //view only own posts

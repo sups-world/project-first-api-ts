@@ -6,7 +6,6 @@ export const createNewPost = async (
   title: string,
   body: string,
 ) => {
-  console.log('createPost');
   const newPost = await prisma.post.create({
     data: {
       title,
@@ -61,6 +60,13 @@ export const updatePost = async (id: string, title?: string, body?: string) => {
 };
 
 // deletePost
-export const delPost = () => {
-  console.log('deletePost');
+export const delPost = async (id: string) => {
+  const deletedUser = await prisma.post.delete({
+    where: {
+      id,
+      // above is same as id:id,
+    },
+  });
+  if (deletedUser === null || typeof deletedUser === 'undefined') return null;
+  return deletedUser;
 };

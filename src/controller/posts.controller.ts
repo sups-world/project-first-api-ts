@@ -1,5 +1,6 @@
 import express, { request, NextFunction } from 'express';
 import { Post } from '../models/post.model';
+import { getAllPosts } from '../services/posts.services';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
 //function receives req,id as parameter
@@ -44,7 +45,8 @@ export const viewAllPosts = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const allPosts = Post.view();
+  // const allPosts = Post.view();
+  const allPosts = getAllPosts;
   res.send(allPosts);
 };
 //view post by id

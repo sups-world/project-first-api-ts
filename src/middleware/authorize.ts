@@ -1,11 +1,13 @@
+// req. header ma hune id ra params ma pathaune id matra same xa ki xina herxa
+
 import express from 'express';
 export const authorizeUser = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { id: cid } = req.crntUser as { id: number }; //req.crntUser is an object only after compilation therefore we extract like this
-  const { id: paramsID } = req.params as unknown as { id: number };
+  const { id: cid } = req.crntUser as { id: string }; //req.crntUser is an object only after compilation therefore we extract like this
+  const { id: paramsID } = req.params as unknown as { id: string };
   console.log('this is params id', paramsID, 'this is current id', cid);
   console.log('this is the value:::', cid === paramsID);
   if (cid == paramsID) {

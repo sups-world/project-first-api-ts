@@ -67,8 +67,8 @@ export const viewAllPosts = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  // const allPosts = Post.view();
-  const allPosts = await getAllPosts();
+  const { authorId } = req.query as unknown as { authorId: string };
+  const allPosts = await getAllPosts(authorId);
   return res.send(allPosts);
 };
 //view post by id

@@ -171,7 +171,7 @@ export const editUser = async (
     const { name } = req.body as { name: string };
     // const users = User.edit(parseInt(id), { name });
     const flag = await allowUser(req, id);
-    if (flag === false) return res.status(401).send('you are not authorized');
+    if (flag === false) return res.status(403).send('you are not authorized');
 
     const users = await edtUser(id, name);
     if (users === null) {

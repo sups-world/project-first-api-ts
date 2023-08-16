@@ -16,8 +16,11 @@ export const createNewPost = async (
   return newPost;
 };
 // getAllPosts
-export const getAllPosts = async () => {
+export const getAllPosts = async (authorId?: string) => {
   const posts = await prisma.post.findMany({
+    where: {
+      authorId,
+    },
     include: {
       author: {
         select: {

@@ -8,10 +8,10 @@ import { authenticateToken as verifyToken } from '../middleware/authToken';
 
 import { Router } from 'express';
 import {
+  authorPosts,
   createPost,
   deletePost,
   editPost,
-  // ownPost,
   viewAllPosts,
   viewSinglePost,
 } from '../controller/posts.controller';
@@ -35,4 +35,4 @@ postsRoute.put('/:id', verifyToken, editPost);
 
 postsRoute.delete('/:id', verifyToken, deletePost);
 
-// postsRoute.get('/own', tokenAuth, ownPost);
+postsRoute.get('/author/:id', authorPosts);

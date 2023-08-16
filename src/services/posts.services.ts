@@ -25,6 +25,9 @@ export const getAllPosts = async () => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
   return posts;
 };
@@ -38,6 +41,19 @@ export const getSinglePost = async (id: string) => {
   });
 
   return sPost;
+};
+
+// getallPostsbyauthorid
+export const getPostsAuthor = async (id: string) => {
+  const allPosts = await prisma.post.findMany({
+    where: {
+      authorId: id,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return allPosts;
 };
 
 // updatePost

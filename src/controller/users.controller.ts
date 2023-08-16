@@ -18,7 +18,7 @@ export const allowUser = async (req: express.Request, id: string) => {
   const { id: paramsID } = req.params as unknown as { id: string };
   // const post = await getSinglePost(id);
   // if (post === null || typeof post === 'undefined') return false;
-  if (cid == paramsID) {
+  if (cid === paramsID) {
     return true;
   } else {
     return false;
@@ -170,6 +170,9 @@ export const editUser = async (
 
     const { name } = req.body as { name: string };
     // const users = User.edit(parseInt(id), { name });
+    const flag = await allowUser(req, id);
+    if (flag === false) return res.status(401).send('you are not authorized');
+
     const users = await edtUser(id, name);
     if (users === null) {
       return res.status(401).send('you are not authorized');
@@ -205,6 +208,9 @@ export const deleteUser = async (
 
   try {
     const { id } = req.params;
+    const flag = await allowUser(req, id);
+    if (flag === false) return res.status(401).send('you are not authorized');
+
     const user = await delUser(id);
     if (user === null) {
       return res.status(404).send('no such data exists');

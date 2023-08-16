@@ -1,3 +1,5 @@
+//this function will not be used. I integrated this to the user.controller itself
+
 // req. header ma hune id ra params ma pathaune id matra same xa ki xina herxa
 
 import express from 'express';

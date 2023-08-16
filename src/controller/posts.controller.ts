@@ -1,13 +1,12 @@
 import express, { request, NextFunction } from 'express';
-import { Post } from '../models/post.model';
 import {
   createNewPost,
   delPost,
   getAllPosts,
+  getPostsAuthor,
   getSinglePost,
   updatePost,
 } from '../services/posts.services';
-import { allowUser } from './users.controller';
 import { Prisma } from '@prisma/client';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
@@ -29,8 +28,9 @@ const userAllowed = async (req: express.Request, id: string) => {
   //this is to see if the authorid and req.crntuser.id matches
   try {
     const oldPost = await getSinglePost(id);
-    if (oldPost === null) return null;
+    if (oldPost === null) return false;
     if (req.crntUser.id === oldPost.authorId) return true;
+    return false;
   } catch (error) {
     console.log(error);
   }
@@ -98,7 +98,6 @@ export const editPost = async (
     const { title, body } = req.body as { title: string; body: string };
 
     // const { creator: crID } = req.crntUser as { creator: number };
-
     // const temp = Post.viewOne(parseInt(id));
     // if (temp) {
     //   //check if creator(id) of temp is same as the crntUser from req
@@ -119,8 +118,12 @@ export const editPost = async (
     // }
     // const check = await allowUser(req, id);
     // if (!check) return res.status(401).send('your access is invalid');
+
     const flag = await userAllowed(req, id);
-    if (flag !== null || typeof flag !== 'undefined') {
+    console.log('this is flag:::', flag);
+    if (flag === undefined)
+      return res.status(403).send('you can only edit your post');
+    if (flag !== false) {
       // const onePost = Post.edit(parseInt(id), { title, body });
       const onePost = await updatePost(id, title, body);
       if (onePost) {
@@ -150,6 +153,9 @@ export const deletePost = async (
     const { id } = req.params;
     // now to see if req.params.id matches post.authorid
     const flag = await userAllowed(req, id);
+    if (flag === undefined)
+      return res.status(403).send('you can only edit your post');
+
     if (flag) {
       const onePost = await delPost(id);
       if (onePost !== null) {
@@ -171,12 +177,23 @@ export const deletePost = async (
   //using function to make sure user can only delete own post, not others
 };
 
-// //view only own posts
-// export const ownPost = async (
-//   req: express.Request,
-//   res: express.Response,
-//   next: express.NextFunction,
-// ) => {
-//   const allPosts = Post.view();
-//   const ownPosts = allPosts.filter();
-// };
+export const authorPosts = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const posts = await getPostsAuthor(id);
+  let value = posts.length;
+  // console.log(value, '::::this is the length of posts');
+  // console.log(posts, ':::::::::::posts');
+  // console.log('type of :::', typeof posts);
+
+  const postsLength = Object.keys(posts).length; //to see if [] is returned...it'll be zero if so
+  //empty object is returned here if no posts are matched
+  if (postsLength !== 0) {
+    return res.send(posts);
+  } else {
+    return res.status(404).send('no records found');
+  }
+};

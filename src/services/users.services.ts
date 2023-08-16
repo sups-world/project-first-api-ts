@@ -32,6 +32,9 @@ export const getAllUsers = async () => {
       //   id: true,
       //   password: true,
       // },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     return allUsers;
   } catch (error) {

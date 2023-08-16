@@ -152,8 +152,6 @@ export const deletePost = async (
     const { id } = req.params;
     // now to see if req.params.id matches post.authorid
     const flag = await userAllowed(req, id);
-    if (flag === undefined)
-      return res.status(403).send('you can only edit your post');
 
     if (flag) {
       const onePost = await delPost(id);
@@ -175,24 +173,3 @@ export const deletePost = async (
 
   //using function to make sure user can only delete own post, not others
 };
-
-// export const authorPosts = async (
-//   req: express.Request,
-//   res: express.Response,
-//   next: express.NextFunction,
-// ) => {
-//   const { id } = req.params;
-//   const posts = await getPostsAuthor(id);
-//   let value = posts.length;
-//   // console.log(value, '::::this is the length of posts');
-//   // console.log(posts, ':::::::::::posts');
-//   // console.log('type of :::', typeof posts);
-
-//   const postsLength = Object.keys(posts).length; //to see if [] is returned...it'll be zero if so
-//   //empty object is returned here if no posts are matched
-//   if (postsLength !== 0) {
-//     return res.send(posts);
-//   } else {
-//     return res.status(404).send('no records found');
-//   }
-// };

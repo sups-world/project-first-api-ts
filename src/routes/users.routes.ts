@@ -24,7 +24,6 @@ usersRoute.get('/', authToken, viewAllUsers);
 // usersRoute.get('/:id', viewSingleUser);
 usersRoute.get('/:id', viewSingleUser);
 
-//TODO::validate name from req.body
 // usersRoute.patch(
 //   '/:id',
 //   authToken,

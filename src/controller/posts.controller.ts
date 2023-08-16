@@ -33,6 +33,7 @@ const userAllowed = async (req: express.Request, id: string) => {
     return false;
   } catch (error) {
     console.log(error);
+    return false;
   }
 };
 
@@ -120,9 +121,8 @@ export const editPost = async (
     // if (!check) return res.status(401).send('your access is invalid');
 
     const flag = await userAllowed(req, id);
-    console.log('this is flag:::', flag);
-    if (flag === undefined)
-      return res.status(403).send('you can only edit your post');
+    // if (flag === undefined)
+    //   return res.status(403).send('you can only edit your post');
     if (flag !== false) {
       // const onePost = Post.edit(parseInt(id), { title, body });
       const onePost = await updatePost(id, title, body);

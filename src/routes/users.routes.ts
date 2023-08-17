@@ -1,4 +1,4 @@
-import express from 'express';
+// import express from 'express';
 
 import { Router } from 'express';
 import {
@@ -11,6 +11,7 @@ import {
   userValidationRules as rules,
   validate,
 } from '../middleware/validators';
+import { idExistRules as idExists } from '../middleware/validators';
 
 import { authenticateToken as authToken } from '../middleware/authToken';
 
@@ -32,10 +33,18 @@ usersRoute.get('/:id', viewSingleUser);
 //   allowUser,
 //   editUser,
 // );
-usersRoute.patch('/:id', authToken, [rules.id, rules.name], validate, editUser);
+usersRoute.patch(
+  '/:id',
+  idExists.id,
+  validate,
+  authToken,
+  [rules.id, rules.name],
+  validate,
+  editUser,
+);
 
 // usersRoute.delete('/:id', authToken, deleteUser);
-usersRoute.delete('/:id', authToken, deleteUser);
+usersRoute.delete('/:id', idExists.id, validate, authToken, deleteUser);
 
 // code to debug
 // (_, __, next) => {

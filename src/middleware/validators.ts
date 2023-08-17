@@ -1,8 +1,8 @@
 import express from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { getSingleUser } from '../services/users.services';
-import { Prisma } from '@prisma/client';
-import prisma from '../database/index.database';
+// import { Prisma } from '@prisma/client';
+// import prisma from '../database/index.database';
 
 // the array holds validation check for each body(req)..this is for previous code
 
@@ -47,6 +47,16 @@ export const emailRules = {
     const ref = await getSingleUser(undefined, a);
     if (ref) {
       throw new Error('Email is already in use.Try another');
+    }
+  }),
+};
+
+//to check if id exists for users
+export const idExistRules = {
+  id: param('id').custom(async a => {
+    const ref = await getSingleUser(a);
+    if (!ref) {
+      throw new Error("This user doesn't exist");
     }
   }),
 };

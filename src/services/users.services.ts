@@ -44,11 +44,12 @@ export const getAllUsers = async () => {
 };
 
 //show single user by id
-export const getSingleUser = async (id: string) => {
+export const getSingleUser = async (id?: string, email?: string) => {
   try {
     const oneUser = await prisma.user.findUnique({
       where: {
         id,
+        email,
       },
       // select: {
       //   email: true,

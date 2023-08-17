@@ -1,5 +1,8 @@
 import express from 'express';
 import { body, param, validationResult } from 'express-validator';
+import { getSingleUser } from '../services/users.services';
+import { Prisma } from '@prisma/client';
+import prisma from '../database/index.database';
 
 // the array holds validation check for each body(req)..this is for previous code
 
@@ -32,44 +35,21 @@ export const postValidationRules = {
   id: param('id').isNumeric().toInt().withMessage(' should be number'),
 };
 
-// export const nameValidationRules = body('name')
-//   .isString()
-//   .trim()
-//   .notEmpty()
-//   .isLength({ min: 2 })
-//   .withMessage('name cannot be empty or less than 2 characters');
-
-// export const emailValidationRules = body('email')
-//   .trim()
-//   .isEmail()
-//   .withMessage('this is not a valid email');
-// export const pwdValidationRules = body('password')
-//   .isLength({ min: 5, max: 12 })
-//   .withMessage(
-//     ' password must be 5 characters or more..must not be more than 12 characters',
-//   );
-
-// export const userValidationRules = [
-//   // body('name')
-//   //   .isString()
-//   //   .trim()
-//   //   .notEmpty()
-//   //   .isLength({ min: 2 })
-//   //   .withMessage('name cannot be empty'),
-//   nameValidationRules,
-//   emailValidationRules,
-//   pwdValidationRules,
-// ];
-
-// login validation
-// export const loginValidationRules = [
-//   body('email').trim().isEmail().withMessage('this is not a valid email'),
-//   body('password')
-//     .isLength({ min: 5, max: 12 })
-//     .withMessage(
-//       'must be 5 characters or more..must not be more than 12 characters',
-//     ),
-// ];
+// check email is unique in database
+export const emailRules = {
+  // email: body('email').custom(async a => {
+  //   const ref = await getSingleUser(a);
+  //   if (ref) {
+  //     throw new Error('Email already in use');
+  //   }
+  // }),
+  email: body('email').custom(async a => {
+    const ref = await getSingleUser(undefined, a);
+    if (ref) {
+      throw new Error('Email is already in use.Try another');
+    }
+  }),
+};
 
 //this function extracts error from each element from body(req)
 export const validate = (
@@ -78,7 +58,7 @@ export const validate = (
   next: express.NextFunction,
 ) => {
   const ermsg = validationResult(req);
-  // console.log('errors:', ermsg);
+  console.log('errors::::::', ermsg);
   // error xina vane go to next flow
   if (ermsg.isEmpty()) {
     return next();

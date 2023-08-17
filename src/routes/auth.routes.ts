@@ -4,6 +4,7 @@ import { signup, login } from '../controller/auth.controller';
 import {
   validate,
   userValidationRules as rules,
+  emailRules as uniqemailrule,
 } from '../middleware/validators';
 
 export const authRoute = Router();
@@ -12,6 +13,7 @@ export const authRoute = Router();
 authRoute.post(
   '/signup',
   [rules.name, rules.email, rules.password],
+  uniqemailrule.email,
   validate,
   signup,
 );

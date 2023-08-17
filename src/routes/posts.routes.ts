@@ -8,7 +8,6 @@ import { authenticateToken as verifyToken } from '../middleware/authToken';
 
 import { Router } from 'express';
 import {
-  authorPosts,
   createPost,
   deletePost,
   editPost,
@@ -35,4 +34,4 @@ postsRoute.put('/:id', verifyToken, editPost);
 
 postsRoute.delete('/:id', verifyToken, deletePost);
 
-postsRoute.get('/author/:id', authorPosts);
+// postsRoute.get('/author/:id', authorPosts);

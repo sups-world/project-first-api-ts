@@ -4,6 +4,7 @@ import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user.model';
 import { userCreate } from '../services/users.services';
 import { showByEmail } from '../services/users.services';
+import { Prisma } from '@prisma/client';
 // import { UserInfo } from '../interface/user.interface';
 
 // interface
@@ -142,14 +143,32 @@ export const signup = async (
   const { email, password, name } = req.body;
 
   // const existingUser = User.findFirst(a => a.email === email);
-  const existingUser = await showByEmail(email);
-  if (existingUser) {
-    return res.status(400).send('email already used');
-  }
+  // const existingUser = await showByEmail(email);
+  // if (existingUser) {
+  //   return res.status(400).send('email already used');
+  // }
 
   const hashedPwd = await bcrypt.hash(password, 10);
   // const user = User.add({ email, name, password: hashedPwd });
-  const user = await userCreate(email, hashedPwd, name);
+  try {
+    const user = await userCreate(email, hashedPwd, name);
+
+    const accessToken = jwt.sign(
+      //jwt is for those data that can be public..example:id..but not passwords or emails
+      { id: user.id },
+      process.env.SECRET_KEY as string,
+      {
+        expiresIn: '1d',
+      },
+    );
+
+    return res.status(201).json({ accessToken: accessToken, user });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(e.code, e.message);
+      return res.status(400).send('email should be unique.Try again');
+    }
+  }
 
   //  // creating a new token
   //       //  const token = jwt.sign({ newUser }, process.env.SECRET_KEY as string, {
@@ -164,17 +183,6 @@ export const signup = async (
   //       // // returning the token while console logging newUser
   //       // console.log(newUser, 'new user created successfully');
   //       // return res.status(201).json({ token: token });
-
-  const accessToken = jwt.sign(
-    //jwt is for those data that can be public..example:id..but not passwords or emails
-    { id: user.id },
-    process.env.SECRET_KEY as string,
-    {
-      expiresIn: '1d',
-    },
-  );
-
-  return res.status(201).json({ accessToken: accessToken, user });
 };
 
 //sign in module

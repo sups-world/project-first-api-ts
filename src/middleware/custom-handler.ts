@@ -14,7 +14,8 @@ export const handleError = async (
   } else {
     console.log('in other error');
     console.log(err);
-    res.send(err.message);
+    res.status((err as CustomError).status);
+    res.send(err.message + ' ::::::::');
     res.end();
   }
 };

@@ -19,12 +19,14 @@ app.use(express.json());
 app.use('/', routes);
 
 //404 handling
-app.use((req, res, next) => {
-  next({
-    status: 404,
-    message: 'The page you are looking for does not exist',
-  });
-});
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    next({
+      status: 404,
+      message: 'The page you are looking for does not exist',
+    });
+  },
+);
 // error handler at the end of use and routes
 // app.use(handleError);
 

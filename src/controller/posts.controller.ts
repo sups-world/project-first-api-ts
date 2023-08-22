@@ -1,4 +1,5 @@
 import express, { request, NextFunction } from 'express';
+import { errorWithStatus } from '../middleware/global.error.handler';
 import {
   createNewPost,
   delPost,
@@ -9,6 +10,7 @@ import {
   updatePost,
 } from '../services/posts.services';
 import { Prisma } from '@prisma/client';
+import { CustomError } from '../interface/cutomError.interface';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
 //function receives req,id as parameter
@@ -95,12 +97,20 @@ export const viewSinglePost = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  // const onePost = Post.viewOne(parseInt(id));
-  const onePost = await getSinglePost(id);
-  if (onePost !== null) {
-    res.send(onePost);
-  } else {
-    res.status(404).send('no records found');
+  ///// // const onePost = Post.viewOne(parseInt(id));
+  // const onePost = await getSinglePost(id);
+  // if (onePost !== null) {
+  //   res.send(onePost);
+  // } else {
+  //   res.status(404).send('no records found');
+  //   // throw new Error('No records found');
+  // }
+
+  try {
+    const onePost = await getSinglePost(id);
+    if (onePost == null) throw new CustomError('NO RECORDS FOUND', 404);
+  } catch (error) {
+    next({ status: 404, message: error });
   }
 };
 

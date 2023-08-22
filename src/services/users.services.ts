@@ -63,6 +63,31 @@ export const getSingleUser = async (id?: string, email?: string) => {
     console.log(error);
   }
 };
+
+//get user by name..findMany
+export const getUsersByName = async (name: string) => {
+  try {
+    const matchResults = await prisma.user.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
+      },
+      orderBy: { email: 'asc' },
+    });
+    return matchResults;
+  } catch (error) {
+    console.log(error);
+  }
+};
 // find user by email
 export const showByEmail = async (email: string) => {
   try {
@@ -73,6 +98,34 @@ export const showByEmail = async (email: string) => {
       },
     });
     return found;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//filter user by email
+export const filterUserEmail = async () => {
+  try {
+    const matchResults = await prisma.user.findMany({
+      where: {
+        OR: [
+          { email: { endsWith: '@gmail.com' } },
+          { email: { endsWith: '@yahoo.com' } },
+        ],
+        NOT: {
+          email: { endsWith: '@test.com' },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
+      },
+      orderBy: { email: 'asc' },
+    });
+    return matchResults;
   } catch (error) {
     console.log(error);
   }

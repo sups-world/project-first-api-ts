@@ -6,10 +6,13 @@ import { Prisma } from '@prisma/client';
 import {
   delUser,
   edtUser,
+  filterUserEmail,
   getAllUsers,
   getSingleUser,
+  getUsersByName,
 } from '../services/users.services';
 import { getSinglePost } from '../services/posts.services';
+import prisma from '../database/index.database';
 
 //function to check if the current logged in user is editing/deleting their own records only
 // to check req.crntuserid matches the id in params
@@ -134,11 +137,32 @@ export const viewAllUsers = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
+  let { filteremail } = req.query as unknown as { filteremail: number };
+  console.log(typeof filteremail);
+  if (filteremail == 1) {
+    const filterResult = await filterUserEmail();
+    console.log('I am here');
+    if (filterResult === undefined || filterResult.length == 0)
+      return res.status(404).send('no data found');
+
+    return res.send(filterResult);
+  }
+  let { name } = req.query as unknown as { name: string };
+  if (name) {
+    const result = await getUsersByName(name);
+    if (result === undefined || result.length == 0)
+      return res.status(404).send('no data found');
+
+    return res.send(result);
+  }
   // const users = User.findAll();
   const users = await getAllUsers();
   if (users === null) return res.send('no data found');
   res.status(200).send(users);
 };
+
+//email filter
+export const viewEmailFilter = async () => {};
 
 //view by id in params
 export const viewSingleUser = async (

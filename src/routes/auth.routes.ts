@@ -4,7 +4,7 @@ import { signup, login } from '../controller/auth.controller';
 import {
   validate,
   userValidationRules as rules,
-  emailRules as uniqemailrule,
+  emailRules as isEmailunique,
 } from '../middleware/validators';
 
 export const authRoute = Router();
@@ -12,11 +12,16 @@ export const authRoute = Router();
 // adding validator before signUp controller
 authRoute.post(
   '/signup',
-  [rules.name, rules.email, rules.password],
-  uniqemailrule.email,
+  [rules.nameValidator, rules.emailValidator, rules.passwordValidator],
+  isEmailunique.email,
   validate,
   signup,
 );
 
 // verify token in login
-authRoute.post('/login', [rules.email, rules.password], validate, login);
+authRoute.post(
+  '/login',
+  [rules.emailValidator, rules.passwordValidator],
+  validate,
+  login,
+);

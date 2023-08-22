@@ -10,6 +10,8 @@ import {
 import {
   userValidationRules as rules,
   validate,
+  // emailUniqueChecker as isEmailUnique,
+  isIdExist as isIdinDb,
 } from '../middleware/validators';
 import { idExistRules as idExists } from '../middleware/validators';
 
@@ -23,7 +25,7 @@ export const usersRoute = Router();
 usersRoute.get('/', authToken, viewAllUsers);
 
 // usersRoute.get('/:id', viewSingleUser);
-usersRoute.get('/:id', viewSingleUser);
+usersRoute.get('/:id', isIdinDb, validate, viewSingleUser);
 
 // usersRoute.patch(
 //   '/:id',
@@ -38,13 +40,13 @@ usersRoute.patch(
   idExists.id,
   validate,
   authToken,
-  [rules.id, rules.name],
+  [rules.idValidator, rules.nameValidator],
   validate,
   editUser,
 );
 
 // usersRoute.delete('/:id', authToken, deleteUser);
-usersRoute.delete('/:id', idExists.id, validate, authToken, deleteUser);
+usersRoute.delete('/:id', isIdinDb, validate, authToken, deleteUser);
 
 // code to debug
 // (_, __, next) => {

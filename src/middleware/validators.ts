@@ -1,29 +1,54 @@
 import express from 'express';
+import { ExpressValidator } from 'express-validator';
 import { body, param, validationResult } from 'express-validator';
 import { getSingleUser } from '../services/users.services';
 // import { Prisma } from '@prisma/client';
 // import prisma from '../database/index.database';
 
 // the array holds validation check for each body(req)..this is for previous code
+//object...
+//TODO:::extends garne concept
 
+let idExistChecker = {
+  id: param('id').custom(async a => {
+    const ref = await getSingleUser(a);
+    if (!ref) {
+      throw new Error("This user doesn't exist");
+    }
+  }),
+};
 export const userValidationRules = {
-  name: body('name')
+  nameValidator: body('name')
     .isString()
     .trim()
     .notEmpty()
     .isLength({ min: 2 })
     .withMessage('name cannot be empty or less than 2 characters'),
-  email: body('email')
+  emailValidator: body('email')
     .trim()
     .isEmail()
     .withMessage('this is not a valid email'),
-  password: body('password')
+  passwordValidator: body('password')
     .isLength({ min: 5, max: 12 })
     .withMessage(
       'password must be 5 characters or more..must not be more than 12 characters',
     ),
-  id: param('id').isString().withMessage('id should be cuid'),
+  idValidator: param('id').isString().withMessage('id should be cuid'),
 };
+
+// export const emailUniqueChecker = emailcollection.custom(async a => {
+//   const ref = await getSingleUser(undefined, a);
+//   if (ref) {
+//     throw new Error('Email is already in use.Try another');
+//   }
+// });
+export const isIdExist = userValidationRules.idValidator.custom(async a => {
+  const ref = await getSingleUser(a);
+  console.log('hello:::', ref);
+  if (ref === null) {
+    throw new Error("This user doesn't exist");
+  }
+});
 
 export const postValidationRules = {
   title: body('title')
@@ -60,6 +85,8 @@ export const idExistRules = {
     }
   }),
 };
+
+// classes of validators so that we can use as needed
 
 //this function extracts error from each element from body(req)
 export const validate = (

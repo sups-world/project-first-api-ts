@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client';
 import {
   delUser,
   edtUser,
+  filterAge,
   filterUserEmail,
   getAllUsers,
   getSingleUser,
@@ -137,6 +138,21 @@ export const viewAllUsers = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
+  //filterAge
+  let { lowerAge } = req.query as unknown as { lowerAge: string };
+  console.log(typeof lowerAge);
+  console.log(lowerAge);
+  if (lowerAge) {
+    let val = parseInt(lowerAge);
+    const filterResult = await filterAge(val);
+    console.log('I am here');
+    if (filterResult === undefined || filterResult.length == 0)
+      return res.status(404).send('no data found');
+
+    return res.send(filterResult);
+  }
+
+  //filteremail
   let { filteremail } = req.query as unknown as { filteremail: number };
   console.log(typeof filteremail);
   if (filteremail == 1) {

@@ -140,7 +140,12 @@ export const signup = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, age } = req.body as {
+    email: string;
+    password: string;
+    name: string;
+    age?: number;
+  };
 
   // const existingUser = User.findFirst(a => a.email === email);
   // const existingUser = await showByEmail(email);
@@ -151,7 +156,7 @@ export const signup = async (
   const hashedPwd = await bcrypt.hash(password, 10);
   // const user = User.add({ email, name, password: hashedPwd });
   try {
-    const user = await userCreate(email, hashedPwd, name);
+    const user = await userCreate(email, hashedPwd, name, age);
 
     const accessToken = jwt.sign(
       //jwt is for those data that can be public..example:id..but not passwords or emails
@@ -167,6 +172,8 @@ export const signup = async (
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       console.log(e.code, e.message);
       return res.status(400).send('email should be unique.Try again');
+    } else {
+      console.log(e, 'this is error');
     }
   }
 

@@ -6,6 +6,7 @@ export const userCreate = async (
   email1: string,
   password1: string,
   name1: string,
+  age1?: number,
 ) => {
   try {
     const newUser = await prisma.user.create({
@@ -13,6 +14,7 @@ export const userCreate = async (
         email: email1,
         password: password1,
         name: name1,
+        age: age1,
       },
     });
     return newUser;
@@ -128,6 +130,24 @@ export const filterUserEmail = async () => {
     return matchResults;
   } catch (error) {
     console.log(error);
+  }
+};
+
+//filter by age
+export const filterAge = async (ag: number) => {
+  try {
+    const result = await prisma.user.findMany({
+      where: {
+        age: {
+          gte: ag,
+        },
+      },
+      orderBy: { age: 'desc' },
+    });
+    console.log('we are here');
+    return result;
+  } catch (error) {
+    throw error;
   }
 };
 

@@ -74,7 +74,14 @@ export const getUsersByName = async (name: string) => {
           mode: 'insensitive',
         },
       },
-      orderBy: { name: 'asc' },
+      include: {
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
+      },
+      orderBy: { email: 'asc' },
     });
     return matchResults;
   } catch (error) {

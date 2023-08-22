@@ -69,6 +69,7 @@ export const getPostsWith = async (word: string) => {
         },
       },
     },
+    orderBy: { authorId: 'asc' },
   });
   return result;
 };

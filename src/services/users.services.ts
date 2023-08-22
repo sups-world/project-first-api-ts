@@ -103,6 +103,34 @@ export const showByEmail = async (email: string) => {
   }
 };
 
+//filter user by email
+export const filterUserEmail = async () => {
+  try {
+    const matchResults = await prisma.user.findMany({
+      where: {
+        OR: [
+          { email: { endsWith: '@gmail.com' } },
+          { email: { endsWith: '@yahoo.com' } },
+        ],
+        NOT: {
+          email: { endsWith: '@test.com' },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
+      },
+      orderBy: { email: 'asc' },
+    });
+    return matchResults;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // editing user
 export const edtUser = async (idd: string, namee: string) => {
   try {

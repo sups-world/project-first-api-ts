@@ -74,6 +74,26 @@ export const getPostsWith = async (word: string) => {
   return result;
 };
 
+//filter body without
+export const getPostsWithout = async (word: string) => {
+  const result = await prisma.post.findMany({
+    where: {
+      body: {
+        contains: word,
+      },
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: { authorId: 'asc' },
+  });
+  return getPostsWithout;
+};
+
 // getallPostsbyauthorid
 // export const getPostsAuthor = async (id: string) => {
 //   const allPosts = await prisma.post.findMany({

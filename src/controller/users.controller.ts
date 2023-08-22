@@ -8,8 +8,10 @@ import {
   edtUser,
   getAllUsers,
   getSingleUser,
+  getUsersByName,
 } from '../services/users.services';
 import { getSinglePost } from '../services/posts.services';
+import prisma from '../database/index.database';
 
 //function to check if the current logged in user is editing/deleting their own records only
 // to check req.crntuserid matches the id in params
@@ -134,6 +136,14 @@ export const viewAllUsers = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
+  let { name } = req.query as unknown as { name: string };
+  if (name) {
+    const result = await getUsersByName(name);
+    if (result === undefined || result.length == 0)
+      return res.status(404).send('no data found');
+
+    return res.send(result);
+  }
   // const users = User.findAll();
   const users = await getAllUsers();
   if (users === null) return res.send('no data found');

@@ -63,6 +63,24 @@ export const getSingleUser = async (id?: string, email?: string) => {
     console.log(error);
   }
 };
+
+//get user by name..findMany
+export const getUsersByName = async (name: string) => {
+  try {
+    const matchResults = await prisma.user.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+    return matchResults;
+  } catch (error) {
+    console.log(error);
+  }
+};
 // find user by email
 export const showByEmail = async (email: string) => {
   try {

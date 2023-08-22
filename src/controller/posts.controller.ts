@@ -3,6 +3,7 @@ import {
   createNewPost,
   delPost,
   getAllPosts,
+  getPostsWith,
   getSinglePost,
   updatePost,
 } from '../services/posts.services';
@@ -67,6 +68,14 @@ export const viewAllPosts = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
+  const { bdy } = req.query as unknown as { bdy: string };
+  if (bdy) {
+    const posts = await getPostsWith(bdy);
+    if (posts === undefined || posts.length == 0)
+      return res.status(404).send('No matches found');
+    return res.send(posts);
+  }
+
   const { authorId } = req.query as unknown as { authorId: string };
   const allPosts = await getAllPosts(authorId);
   return res.send(allPosts);

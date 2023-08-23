@@ -11,6 +11,7 @@ import {
 } from '../services/posts.services';
 import { Prisma } from '@prisma/client';
 import { CustomError } from '../interface/cutomError.interface';
+import { MyError } from '../models/myError.model';
 
 //function to handle authorization of post actions::only the logged in user can edit just their own post..creator(ID) must match req.crntUser ko id
 //function receives req,id as parameter
@@ -108,9 +109,14 @@ export const viewSinglePost = async (
 
   try {
     const onePost = await getSinglePost(id);
-    if (onePost == null) throw new CustomError('NO RECORDS FOUND', 404);
+    if (onePost == null)
+      throw new MyError('Unable to locate the post of the given id', '404');
   } catch (error) {
-    next({ status: 404, message: error });
+    // next({ status: 404, message: error });
+    if (error instanceof MyError) {
+      error = new MyError(error.message, error.status);
+    }
+    next(error);
   }
 };
 
@@ -155,10 +161,17 @@ export const editPost = async (
       if (onePost) {
         return res.send(onePost);
       } else {
-        return res.status(404).send('no such record found');
+        // return res.status(404).send('no such record found');
+        let error = new MyError('no such record found', '404');
+        next(error);
       }
     } else {
-      return res.status(403).send('You can edit only your post');
+      // return res.status(403).send('You can edit only your post');
+      let error = new MyError(
+        'You are allowed to edit your own posts only',
+        '403',
+      );
+      next(error);
     }
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

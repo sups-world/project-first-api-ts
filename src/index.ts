@@ -5,6 +5,7 @@ import express from 'express';
 
 import { routes } from './routes/index.routes';
 import { handleError } from './middleware/custom-handler';
+import { myErrorHandler } from './middleware/myError.handler';
 
 // import { errorHandler } from './middleware/errorHandler';
 // import handleError from './middleware/error.handler';
@@ -29,8 +30,9 @@ app.use(
 );
 // error handler at the end of use and routes
 // app.use(handleError);
+// app.use(handleError);
 
-app.use(handleError);
+app.use(myErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
